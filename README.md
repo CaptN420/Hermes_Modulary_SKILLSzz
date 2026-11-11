@@ -1,8 +1,40 @@
-# Hermes Skills — profil `def`
+# Hermes Skills — 17 skills procéduraux (profil `def`)
 
-17 skills maison pour Game On Terminal, PyGame, modulary architecture, Multi AI Framework, experimental et outillage QA/dev.
+Bundle de skills procéduraux pour [Hermes Agent](https://hermes-agent.nousresearch.com) : 17 skills qui encodent des faits vérifiés — chemins exacts, commandes, valeurs numériques, pièges reproductibles — sur les projets **PyBR0S** (Pygame fighting/RPG), **Mountain_Roy** (RTS), **Life_mean** (lab de données synthétiques), **CaptN-BRAIN / Mia_Brain**, plus l'outillage transverse (FastAPI, jeux terminal, QA exploratory, venv Windows, cron Hermes).
 
-                          ## Installation ##
+Règle du dépôt : un skill n'est pas de la documentation décorative. Chaque règle encode un bug déjà payé, avec sa cause et son correctif, pour qu'une session future ne le repaye pas.
+
+## Installation
+
+Le chargeur Hermes déduit la **catégorie du dossier**, pas du frontmatter : respecter l'arborescence en copiant.
+
+```bash
+git clone https://github.com/CaptN420/Hermes_Modulary_SKILLSzz.git
+cd Hermes_Modulary_SKILLSzz
+DEST="$HOME/AppData/Local/hermes/profiles/def/skills"   # Windows
+# DEST="$HOME/.hermes/profiles/def/skills"              # Linux / macOS
+cp -r game-dev software-development autonomous-ai-agents "$DEST"/
+cp -r pygame-debugging python-venv-setup life-mean-dashboard-qa "$DEST"/
+```
+
+Contrôle après copie : `skills_list()` doit rendre les 17 noms, chacun avec sa description.
+
+## Les 17 skills
+
+| Catégorie | Skills |
+|---|---|
+| `game-dev` | `pybr0s`, `sprite-management` |
+| `software-development` | `pygame-asset-generation`, `mountain-roy`, `life-mean`, `life-mean-recent-lessons`, `snapshot-logic-architecture`, `captn-brain`, `team-coding-workflow`, `autonomous-decision-engine`, `dogfood-python`, `python-fastapi-apps`, `python-terminal-games` |
+| `autonomous-ai-agents` | `hermes-cron-jobs` |
+| racine (non classés) | `pygame-debugging`, `python-venv-setup`, `life-mean-dashboard-qa` |
+
+`pygame-asset-generation` est fourni ici mais peut être inactif côté Hermes s'il a été archivé (dossier `.archive/`) — c'est un skill du bundle, pas une dépendance des autres.
+
+## Prompt de reconstruction
+
+La spec complète ci-dessous permet de régénérer le bundle de zéro dans une session fraîche.
+
+---
 
 
 # PROMPT — Recréer le bundle complet des 17 skills maison (profil Hermes `def`)

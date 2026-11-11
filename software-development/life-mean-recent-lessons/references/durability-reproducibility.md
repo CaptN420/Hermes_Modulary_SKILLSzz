@@ -1,13 +1,13 @@
-# Durabilité, reproductibilité & honnêteté des artefacts
+# Durability, reproducibility & artefact honesty
 
-Recettes vérifiées en exécution sur le dashboard Docker de Life_mean_realm
-(`127.0.0.1:8080`). Chaque bloc a servi à produire une preuve réelle, pas une
-relecture de code.
+Recipes verified by execution against the Life_mean_realm Docker dashboard
+(`127.0.0.1:8080`). Each block served to produce real proof, not a code
+re-read.
 
-## 1. Créer et lancer un run via l'API (CSRF obligatoire)
+## 1. Create and start a run through the API (CSRF mandatory)
 
-Le cookie et l'en-tête CSRF viennent de `GET /dashboard` ; un POST sans
-`X-Lifemean-CSRF` renvoie 403 (voir la règle du double-submit dans SKILL.md).
+The cookie and the CSRF header come from `GET /dashboard`; a POST without
+`X-Lifemean-CSRF` returns 403 (see the double-submit rule in SKILL.md).
 
 ```python
 import urllib.request, urllib.parse, re, json
@@ -39,14 +39,14 @@ exp = json.loads(body)["experiment_id"]
 call(f"/api/experiments/{exp}/start", "POST", {})
 ```
 
-## 2. Prouver la durabilité par un restart
+## 2. Prove durability by a restart
 
 ```bash
 docker compose restart dashboard && sleep 12
 docker ps --format "{{.Names}} {{.Status}}"     # Up … (healthy)
 ```
 
-Puis relire l'état — c'est **ça** la preuve, pas le test unitaire :
+Then read the state back — **that** is the proof, not the unit test:
 
 ```python
 status, body = call("/api/experiments")
@@ -58,18 +58,18 @@ manifest = json.loads(body)
 assert manifest["rehydrated"] is True and manifest["config"]["seed"] == 21
 ```
 
-Un run réhydraté reste `COMPLETED` (jamais `running`) et son manifeste porte
-`rehydrated: true`, `restored_totals: {events, traces, agents}`, `truncated:` et
-`traces_absent_reason` quand le build ne produit pas de traces.
+A rehydrated run stays `COMPLETED` (never `running`) and its manifest carries
+`rehydrated: true`, `restored_totals: {events, traces, agents}`, `truncated:` and
+`traces_absent_reason` when the build produces no traces.
 
-`POST /api/experiments` **crée** le run (`status: created`) : il faut ensuite
-`POST /api/experiments/{id}/start`. Un run « terminé » avec `tasks_completed: 0`
-vu juste après la création vient de là, pas du moteur.
+`POST /api/experiments` **creates** the run (`status: created`): you must then
+`POST /api/experiments/{id}/start`. A "finished" run with `tasks_completed: 0`
+seen right after creation comes from that, not from the engine.
 
-## 2bis. Sonder l'observabilité persistée (avant / après restart)
+## 2bis. Probe persisted observability (before / after restart)
 
 ```python
-# 1. lancer, attendre la fin
+# 1. start, wait for the end
 call(f"/api/experiments/{exp}/start", "POST", {})
 for _ in range(120):
     time.sleep(1)
@@ -81,7 +81,7 @@ print(len(m["events"]), len(m["traces"]), m.get("traces_absent_reason"))
 ```
 
 ```bash
-# 2. le fichier de run contient le bloc borné
+# 2. the run file holds the bounded block
 docker exec life_mean_realm-dashboard-1 sh -c 'python - <<EOF'
 import json
 d = json.load(open("/app/data/experiments/runs/<exp>.json"))
@@ -89,44 +89,44 @@ o = d["observability"]
 print(len(o["events"]), len(o["traces"]), len(o["agents"]), o["totals"], o["truncated"], o["limits"])
 EOF
 
-# 3. restart puis relire : c'est la seule preuve de réhydratation
+# 3. restart then read back: it is the only proof of rehydration
 docker compose restart dashboard && sleep 14
 ```
 
-Attendu après restart : `rehydrated: true`, les mêmes `events` qu'avant
+Expected after restart: `rehydrated: true`, the same `events` as before
 (`experiment_started` / `experiment_completed`), `agents: {agent_1..3}`,
-`progress.status: COMPLETED`, et une note du type
-`(2 of 2 events, 0 of 0 traces)`. Un `traces_absent_reason` présent est la
-réponse correcte — pas un bug à « réparer » en inventant des traces.
+`progress.status: COMPLETED`, and a note of the form
+`(2 of 2 events, 0 of 0 traces)`. A present `traces_absent_reason` is the
+correct answer — not a bug to "fix" by inventing traces.
 
-## 2ter. Registres d'auto-extension : la persistance se prouve aussi par restart
+## 2ter. Self-extension registries: persistence is proven by restart too
 
 ```python
-call("/api/extensions/tools", "POST", {"description": "Volume d'une sphère"})   # -> persisted: True
+call("/api/extensions/tools", "POST", {"description": "Volume of a sphere"})   # -> persisted: True
 call(f"/api/extensions/tools/{tool_id}/approve", "PUT", {"by": "human"})      # -> 200 approved
 ```
 
-Puis `docker compose restart dashboard` et `GET /api/extensions/tools` : les
-entrées doivent être là (`data/extensions/registries.json` sur le volume).
-Deux propositions de descriptions différentes doivent produire **deux ids**
-distincts — un id identique signifie que les propositions s'écrasent.
+Then `docker compose restart dashboard` and `GET /api/extensions/tools`: the
+entries must be there (`data/extensions/registries.json` on the volume).
+Two proposals with different descriptions must produce **two** distinct ids
+— an identical id means the proposals overwrite each other.
 
-## 3. Champs attendus dans le manifeste de reproductibilité
+## 3. Fields expected in the reproducibility manifest
 
 `engine{name,version}`, `environment{python,system,machine}`,
 `dependencies{combined_sha256}` (pyproject + uv.lock), `git{commit,dirty}`,
 `seed`, `deterministic`, `models`, `tools`, `generator_version`,
-`prompt_version`, et `reproducibility_fingerprint` (hash stable des conditions).
-Aucun secret : versions, ids et hashes seulement — il existe un test qui piège
-les variables d'environnement pour le prouver.
+`prompt_version`, and `reproducibility_fingerprint` (stable hash of the conditions).
+No secrets: versions, ids and hashes only — there is a test that traps
+environment variables to prove it.
 
-## 4. A/B sur le même seed (preuve d'un correctif de pipeline)
+## 4. A/B on the same seed (proof of a pipeline fix)
 
-1. Rejouer le **même** seed avant le correctif, noter `pass_rate` et les lignes
-   fautives du RAW.
-2. Appliquer le correctif, relancer le même seed.
-3. Comparer `pass_rate` (0.333 → 1.0 dans le cas réel) puis, ligne par ligne,
-   `answer` / `ground_truth` / `valid` / `error` :
+1. Replay the **same** seed before the fix, note `pass_rate` and the faulty
+   RAW rows.
+2. Apply the fix, rerun the same seed.
+3. Compare `pass_rate` (0.333 → 1.0 in the real case), then, line by line,
+   `answer` / `ground_truth` / `valid` / `error`:
 
 ```bash
 docker exec life_mean_realm-dashboard-1 sh -c 'python - <<EOF'
@@ -138,18 +138,18 @@ for line in open("/app/data/raw_debates/<exp>.jsonl", encoding="utf8"):
 EOF'
 ```
 
-Un seed différent ne prouve rien : les tâches changent avec le seed.
+A different seed proves nothing: the tasks change with the seed.
 
-## 5. Auditer les affirmations d'un README avant publication
+## 5. Audit a README's claims before publication
 
-Trois vérifications qui ont réellement démenti le README existant :
+Three checks that genuinely contradicted the existing README:
 
-| Affirmation | Vérification | Verdict |
+| Claim | Check | Verdict |
 |---|---|---|
-| `GET /api/experiments/{id}/raw` | `grep -n 'endswith("/raw")' experiments/dashboard.py` | **inexistant** (seul code-lab a `/raw`) |
-| « 22 outils » | compter les dicts `*_TOOLS` par famille | **60** (22 math, 15 physics, 14 chemistry, 3 logic, 6 coding) |
-| nombre de tests | `.venv/Scripts/python -m pytest tests/ -q` | 1694 passed / 13 skipped, pas 713 |
+| `GET /api/experiments/{id}/raw` | `grep -n 'endswith("/raw")' experiments/dashboard.py` | **does not exist** (only code-lab has `/raw`) |
+| "22 tools" | count the `*_TOOLS` dicts per family | **60** (22 math, 15 physics, 14 chemistry, 3 logic, 6 coding) |
+| number of tests | `.venv/Scripts/python -m pytest tests/ -q` | 1694 passed / 13 skipped, not 713 |
 
-Règle : aucune affirmation de compteur, d'endpoint ou de statut ne part dans un
-README sans la commande qui l'a produite. Après publication, relire ce que GitHub
-sert réellement (`curl -s https://raw.githubusercontent.com/<owner>/<repo>/main/README.md`).
+Rule: no claim about a counter, an endpoint or a status goes into a
+README without the command that produced it. After publication, re-read what GitHub
+actually serves (`curl -s https://raw.githubusercontent.com/<owner>/<repo>/main/README.md`).

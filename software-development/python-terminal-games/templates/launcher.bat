@@ -13,8 +13,8 @@ where python >nul 2>nul
 if not errorlevel 1 goto use_python
 
 echo.
-echo  Python 3 est introuvable sur ce PC.
-echo  Installe-le depuis https://www.python.org/downloads/ puis relance ce fichier.
+echo  Python 3 was not found on this PC.
+echo  Install it from https://www.python.org/downloads/ then run this file again.
 echo.
 pause
 exit /b 1
@@ -30,7 +30,7 @@ goto done
 :done
 if errorlevel 1 (
   echo.
-  echo  Le jeu s'est arrete avec une erreur. Lis le message ci-dessus.
+  echo  The game stopped with an error. Read the message above.
   pause
 )
 exit /b 0

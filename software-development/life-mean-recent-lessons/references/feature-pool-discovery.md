@@ -1,10 +1,10 @@
-# Feature Pool — mesure de couverture et élargissement de la découverte
+# Feature Pool — coverage measurement and widening discovery
 
-Recette à appliquer avant **et** après toute modification de `feature_pool/scanner.py`.
-Le principe : un `0 hit` du pool ne prouve rien sur l'existence d'une capacité ; seule une
-mesure de couverture face à un inventaire `ast` permet de conclure.
+Recipe to apply before **and** after any change to `feature_pool/scanner.py`.
+The principle: a `0 hit` from the pool proves nothing about the existence of a capability; only a
+coverage measurement against an `ast` inventory can settle it.
 
-## 1. Mesurer avant de toucher au code
+## 1. Measure before touching the code
 
 ```bash
 cd /c/Users/celes/Documents/Hermes-Workspace/Life_mean_realm
@@ -35,76 +35,76 @@ for b in bad[:10]: print('  ', b)
 PY
 ```
 
-Puis côté pool : `len(pool.registry.all_features)` **et** `len(scanner._build_scan_paths())`.
+Then on the pool side: `len(pool.registry.all_features)` **and** `len(scanner._build_scan_paths())`.
 
-**Le piège à vérifier en premier : le nombre de fichiers retenus.** Si `_build_scan_paths()`
-renvoie beaucoup plus de fichiers que l'inventaire `ast`, un dossier généré se fait scanner.
-Mesuré sur ce dépôt : `code_lab_runs/` contenait **1104 `.py`** copiés par run — sans lui dans la
-denylist, le scan passe de 839 à 1943 fichiers et indexe des doublons d'exécution.
+**The trap to check first: the number of retained files.** If `_build_scan_paths()`
+returns far more files than the `ast` inventory, a generated folder is being scanned.
+Measured on this repo: `code_lab_runs/` held **1104 `.py`** copied per run — without it in the
+denylist, the scan goes from 839 to 1943 files and indexes execution duplicates.
 
-## 2. Forme correcte de la découverte
+## 2. Correct shape of the discovery
 
-- Découvrir **par système de fichiers**, jamais par liste codée en dur : tout dossier de premier
-  niveau sauf denylist explicite. Les paquets ajoutés après coup (`pipeline_inspector`,
-  `feature_pool`, `data`, `life_mean_extensions`, `hermes_cronjob_manager`) étaient invisibles
-  avec la liste figée.
-- Denylist minimale : `.venv`, `venv`, `node_modules`, `build`, `dist`, `.git`, `__pycache__`,
+- Discover **through the filesystem**, never through a hard-coded list: every first-level
+  folder except an explicit denylist. Packages added later (`pipeline_inspector`,
+  `feature_pool`, `data`, `life_mean_extensions`, `hermes_cronjob_manager`) were invisible
+  with the frozen list.
+- Minimal denylist: `.venv`, `venv`, `node_modules`, `build`, `dist`, `.git`, `__pycache__`,
   `site-packages`, `crawled`, `reports`, `overrides`, `.pytest_cache`, `tests`, `docs`, `docker`,
-  `External`, `benchmarks`, `scripts`, **et tout `*_runs`** (`code_lab_runs`, `debate_lab_runs`).
-- `tests/` est exclu **volontairement** : ce sont des fixtures, pas des capacités. Un fixture
-  nommé `FakeController` avait été indexé comme feature.
-- Classement : mot-clé du nom (comportement historique) → suffixe (`engine`, `controller`,
-  `manager`, `worker`, `agent`) → **chemin** (`core/safety`→SAFETY, `core/router`→ROUTING,
+  `External`, `benchmarks`, `scripts`, **and every `*_runs`** (`code_lab_runs`, `debate_lab_runs`).
+- `tests/` is excluded **deliberately**: those are fixtures, not capabilities. A fixture
+  named `FakeController` had been indexed as a feature.
+- Classification: name keyword (historical behaviour) → suffix (`engine`, `controller`,
+  `manager`, `worker`, `agent`) → **path** (`core/safety`→SAFETY, `core/router`→ROUTING,
   `life_mean_studio`→STUDIO, `pipeline_inspector`→OBSERVABILITY, `feature_pool`→METACOGNITION,
-  `data`→PERSISTENCE, `legacy`→LEGACY…) → `TOOLS` en dernier recours.
-  Sans l'étage « chemin », `PolicyGuard`, `ResourceGuard` et `ExperimentExecutionGate`
-  n'entrent jamais dans le registre.
+  `data`→PERSISTENCE, `legacy`→LEGACY…) → `TOOLS` as a last resort.
+  Without the "path" stage, `PolicyGuard`, `ResourceGuard` and `ExperimentExecutionGate`
+  never enter the registry.
 
-## 3. Décomposition des nombres (à reproduire, pas à supposer)
+## 3. Breaking down the numbers (to reproduce, not to assume)
 
-`features enregistrées = classes scannées − classes privées/test − fusions par nom homonyme`
+`registered features = scanned classes − private/test classes − merges by homonymous name`
 
-Chiffres de contrôle sur ce dépôt (après correctif) :
+Control figures on this repo (after the fix):
 
-| Mesure | Valeur |
+| Measurement | Value |
 |---|---|
-| fichiers retenus par `_build_scan_paths()` | 839 |
-| classes présentes | 1280 |
-| classes privées / préfixées `test` | 70 |
-| noms de classes distincts | 1055 |
-| features enregistrées | **989** (221 fusions) |
-| couverture des noms non privés | **100 %** |
-| BROKEN | 0 (1 seul fichier du dépôt ne parse pas, et il est hors périmètre) |
-| `analyze_all` | 1,75 s |
-| construction du Studio (table 989 lignes) | 0,13 s |
+| files retained by `_build_scan_paths()` | 839 |
+| classes present | 1280 |
+| private / `test`-prefixed classes | 70 |
+| distinct class names | 1055 |
+| registered features | **989** (221 merges) |
+| coverage of non-private names | **100 %** |
+| BROKEN | 0 (a single file of the repo does not parse, and it is out of scope) |
+| `analyze_all` | 1.75 s |
+| Studio build (989-row table) | 0.13 s |
 
-Ne pas exprimer le critère d'acceptation en nombre brut de features : `_register_feature`
-fusionne les homonymes, donc tout seuil calibré sur « nb de classes » est faux d'avance.
+Do not express the acceptance criterion as a raw feature count: `_register_feature`
+merges homonyms, so any threshold calibrated on "number of classes" is wrong from the start.
 
-## 4. Protocole de vérification après modification
+## 4. Verification protocol after a change
 
 ```bash
 QT_QPA_PLATFORM=offscreen ./.venv/Scripts/python.exe -m pytest feature_pool/tests -q      # 13 passed
 QT_QPA_PLATFORM=offscreen ./.venv/Scripts/python.exe -m pytest pipeline_inspector/tests -q # 27 passed
-QT_QPA_PLATFORM=offscreen ./.venv/Scripts/python.exe -m pytest tests -q                    # baseline inchangé
+QT_QPA_PLATFORM=offscreen ./.venv/Scripts/python.exe -m pytest tests -q                    # baseline unchanged
 ```
 
-Plus un smoke offscreen du Studio (construction < 5 s, `fp_table.rowCount()` = nb de features)
-et un **delta avant/après** des statuts : aucune `VALIDATED` ne doit être rétrogradée sans être
-nommée, aucune feature ne doit disparaître sans être expliquée.
+Plus an offscreen smoke of the Studio (build < 5 s, `fp_table.rowCount()` = number of features)
+and a **before/after delta** of the statuses: no `VALIDATED` may be downgraded without being
+named, no feature may disappear without being explained.
 
-Effet de bord à annoncer systématiquement : élargir la découverte multiplie les faux `VALIDATED`
-(27 → 129 sur preuve étrangère) et les conflits cartésiens (8 190 → 242 638, toujours 0 high/medium).
+Side effect to announce systematically: widening discovery multiplies false `VALIDATED`
+(27 → 129 on foreign evidence) and Cartesian conflicts (8,190 → 242,638, still 0 high/medium).
 
-## 5. Tests à maintenir dans `feature_pool/tests/test_feature_pool.py`
+## 5. Tests to maintain in `feature_pool/tests/test_feature_pool.py`
 
-1. `sees_top_level_packages` — `PipelineInspector` et `FeatureAnalyzer` présents, chemins
-   `pipeline_inspector/` et `feature_pool/` indexés.
+1. `sees_top_level_packages` — `PipelineInspector` and `FeatureAnalyzer` present, paths
+   `pipeline_inspector/` and `feature_pool/` indexed.
 2. `indexes_security_classes` — `PolicyGuard`, `ResourceGuard`, `ExperimentExecutionGate`,
-   `PolicyViolation` dans le registre.
-3. `excludes_tests_and_generated_runs` — aucun chemin `tests/`, `code_lab_runs/`,
-   `debate_lab_runs/` ; `FakeController` absent.
-4. `broken_count_is_bounded` — `BROKEN <= 3` et `len(statuses) > 500`.
+   `PolicyViolation` in the registry.
+3. `excludes_tests_and_generated_runs` — no `tests/`, `code_lab_runs/`,
+   `debate_lab_runs/` path; `FakeController` absent.
+4. `broken_count_is_bounded` — `BROKEN <= 3` and `len(statuses) > 500`.
 
-Ces quatre tests sont la non-régression du correctif : sans eux, un retour à une liste codée en
-dur ou l'oubli d'une denylist ne se voit pas.
+These four tests are the fix's non-regression: without them, a return to a hard-coded
+list or a forgotten denylist goes unnoticed.

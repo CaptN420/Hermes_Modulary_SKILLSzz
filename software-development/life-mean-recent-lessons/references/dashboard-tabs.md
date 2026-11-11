@@ -1,65 +1,65 @@
-# Ajouter un onglet au dashboard Life_mean (`experiments/ui/dashboard.html`)
+# Adding a tab to the Life_mean dashboard (`experiments/ui/dashboard.html`)
 
-Le dashboard est un fichier HTML unique (~5 900 lignes, 4 blocs `<script>`) qui contient son propre JS.
-Aucun framework, aucun build : chaque onglet se déclare à **quatre endroits**, et un oubli donne un
-onglet qui ne s'ouvre pas ou une table vide.
+The dashboard is a single HTML file (~5,900 lines, 4 `<script>` blocks) that carries its own JS.
+No framework, no build: each tab declares itself in **four places**, and one omission yields a
+tab that does not open or a table that stays empty.
 
-## 1. Les quatre points de contact
+## 1. The four contact points
 
-1. **Bouton de navigation** dans la barre :
-   `<button class="tab-btn" data-tab="<nom>" onclick="switchTab('<nom>', this)">Libellé</button>`
-2. **Panneau** : `<div id="panel-<nom>" class="tab-panel">…</div>` — l'`id` doit valoir
-   `panel-` + le `data-tab`, sinon `switchTab` ne trouve rien et l'onglet reste sur le précédent.
-3. **Hook dans `switchTab(name, btn)`** : `if (name === '<nom>') loadX();` — sans lui le panneau
-   s'affiche mais ne charge jamais ses données (tableau vide silencieux).
-4. **Fonction JS** `loadX()` + un `render()` séparé quand il y a un filtre, pour ne pas refaire de
-   fetch à chaque changement de filtre.
+1. **Navigation button** in the bar:
+   `<button class="tab-btn" data-tab="<name>" onclick="switchTab('<name>', this)">Label</button>`
+2. **Panel**: `<div id="panel-<name>" class="tab-panel">…</div>` — the `id` must be
+   `panel-` + the `data-tab`, otherwise `switchTab` finds nothing and the tab stays on the previous one.
+3. **Hook in `switchTab(name, btn)`**: `if (name === '<name>') loadX();` — without it the panel
+   appears but never loads its data (silently empty table).
+4. **JS function** `loadX()` + a separate `render()` when there is a filter, so as not to redo a
+   fetch on every filter change.
 
-## 2. Conventions à réutiliser
+## 2. Conventions to reuse
 
-- `API_BASE = '/api'` ; `piGet(path)` / `piEsc(value)` existent déjà (échappement HTML obligatoire).
-- Classes existantes : `card`, `subtitle`, `pi-table`, `pi-badge`, `empty-state`, `tab-btn`.
-  Un `<td colspan="N" class="empty-state">` doit toujours porter **un message**, jamais du vide.
-- Pattern « provenance » : afficher d'où vient la donnée plutôt que le seul chiffre —
-  « run rehydraté depuis le résumé persisté — 4/4 traces conservées »,
-  « 14 observées / 989 chargées — 4500 événements sur 25 populations (tronqué) ».
-  Un compteur sans couverture se lit comme un total ; une table vide sans raison se lit comme une panne.
-- Une source indisponible affiche **sa raison** (texte d'erreur du payload), pas une valeur plausible.
+- `API_BASE = '/api'`; `piGet(path)` / `piEsc(value)` already exist (HTML escaping is mandatory).
+- Existing classes: `card`, `subtitle`, `pi-table`, `pi-badge`, `empty-state`, `tab-btn`.
+  A `<td colspan="N" class="empty-state">` must always carry **a message**, never emptiness.
+- "Provenance" pattern: show where the data comes from rather than the figure alone —
+  "run rehydrated from the persisted summary — 4/4 traces kept",
+  "14 observed / 989 loaded — 4500 events over 25 populations (truncated)".
+  A counter without coverage reads as a total; an empty table without a reason reads as an outage.
+- An unavailable source displays **its reason** (the payload's error text), not a plausible value.
 
-## 3. Pièges qui coûtent le plus de temps
+## 3. Pitfalls that cost the most time
 
-- **Un `const`/`let` redéclaré dans le même bloc `<script>` neutralise tout le bloc** : les onglets
-  cessent de répondre sans erreur visible dans l'UI. Vérifier chaque bloc isolément :
+- **A `const`/`let` redeclared in the same `<script>` block neutralises the whole block**: the tabs
+  stop responding with no visible error in the UI. Audit each block in isolation:
   `python "<skill_dir>/scripts/audit-js-blocks.py" experiments/ui/dashboard.html`
-  (sortie attendue : `[OK] bloc N` pour chacun). Un OK prouve qu'un doublon n'est pas passé.
-- **Ne pas blâmer l'UI avant d'avoir interrogé l'API dans la page.**
+  (expected output: `[OK] bloc N` for each one). An OK proves a duplicate did not slip through.
+- **Do not blame the UI before querying the API inside the page.**
   `js("fetch('/api/pipeline/features').then(r=>r.json()).then(d=>{window.__probe=JSON.stringify(...)})")`
-  puis relire `window.__probe` : ça sépare « la route ne rend rien » de « le rendu ne s'applique pas ».
-  Un chargement lourd (4–5 s sur 1 M d'événements) ressemble à un bug si on ne laisse pas le temps.
-- **L'image Docker `COPY` le code** : tant que l'image n'est pas reconstruite, le navigateur sert
-  l'ancien HTML. `docker compose build dashboard && docker compose up -d`, puis vérifier que le
-  contenu attendu est bien servi.
-- **Les tests Python ne valident pas le rendu.** `test_dashboard_ui.py` vérifie des chaînes/alias, pas
-  qu'un onglet fonctionne : la preuve est un vrai navigateur (voir §4).
+  then read `window.__probe` back: that separates "the route returns nothing" from "the rendering does not apply".
+  A heavy load (4–5 s on 1 M events) looks like a bug if you do not give it time.
+- **The Docker image `COPY`s the code**: until the image is rebuilt, the browser serves
+  the old HTML. `docker compose build dashboard && docker compose up -d`, then check that the
+  expected content is actually being served.
+- **Python tests do not validate rendering.** `test_dashboard_ui.py` checks strings/aliases, not
+  that a tab works: the proof is a real browser (see §4).
 
-## 4. Recette de vérification (celle qui compte)
+## 4. Verification recipe (the one that counts)
 
-1. `audit-js-blocks.py` sur le HTML → tous les blocs `[OK]`.
-2. Reconstruire l'image si le code change, sinon lancer le dashboard hôte :
+1. `audit-js-blocks.py` on the HTML → all blocks `[OK]`.
+2. Rebuild the image if the code changes, otherwise start the host dashboard:
    `.venv/Scripts/python -m experiments.dashboard --port 8082 --host 127.0.0.1`
-   (le port 8080 est pris par le conteneur ; l'hôte voit en plus les collecteurs Windows réels).
-3. Piloter le navigateur : `new_tab(url)`, puis
-   `js("switchTab('<nom>', [...document.querySelectorAll('.tab-btn')].find(b=>b.dataset.tab==='<nom>'))")`,
-   attendre (3–10 s selon l'API), et lire `innerText` de chaque zone :
-   compteur, ligne de provenance, 2–3 lignes du tableau.
-4. Tester le filtre dans les deux sens (total → filtré) et vérifier le compte affiché, pas seulement
-   la présence de lignes.
-5. `capture_screenshot()` pour l'œil humain — utile mais **pas** une preuve à la place des `innerText`.
+   (port 8080 is taken by the container; the host additionally sees the real Windows collectors).
+3. Drive the browser: `new_tab(url)`, then
+   `js("switchTab('<name>', [...document.querySelectorAll('.tab-btn')].find(b=>b.dataset.tab==='<name>'))")`,
+   wait (3–10 s depending on the API), and read the `innerText` of each zone:
+   counter, provenance line, 2–3 rows of the table.
+4. Test the filter in both directions (total → filtered) and check the displayed count, not just
+   the presence of rows.
+5. `capture_screenshot()` for the human eye — useful but **not** a proof in place of the `innerText` reads.
 
-## 5. Exemples réels (structure à copier)
+## 5. Real examples (structure to copy)
 
-- Onglet **Système** (`panel-system`, `sysLoad`) : cartes Defender + table des événements, ligne
-  `degraded` quand une source ne répond pas (`not a Windows host` dans le conteneur Linux).
-- Onglet **Traces** (`panel-traces`, `trLoad`/`trFetch`/`trSetRule`/`trRender`) : `<select>` des runs
-  depuis `GET /api/experiments`, filtre par règle, table `heure · règle · tâche · entrée · sortie`,
-  et note de provenance (`d.rehydrated`, `restored_totals.traces`, `traces_absent_reason`).
+- **System** tab (`panel-system`, `sysLoad`): Defender cards + event table, `degraded` line
+  when a source does not answer (`not a Windows host` in the Linux container).
+- **Traces** tab (`panel-traces`, `trLoad`/`trFetch`/`trSetRule`/`trRender`): `<select>` of runs
+  from `GET /api/experiments`, filter by rule, table `time · rule · task · input · output`,
+  and provenance note (`d.rehydrated`, `restored_totals.traces`, `traces_absent_reason`).

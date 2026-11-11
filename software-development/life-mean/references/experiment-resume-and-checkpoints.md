@@ -7,7 +7,7 @@ resume-after-crash, “the Continue button restarted everything”.
 
 - **Continue resumes; it never silently restarts.** Branch explicitly:
   no checkpoint → refuse with a reason; run already finished → refuse
-  (“déjà terminée (N/N tâches)”) and point at restart; seed/domain changed since the
+  (“already finished (N/N tasks)”) and point at restart; seed/domain changed since the
   interruption → refuse, because resuming would mix two experiments.
 - **RAW evidence first, checkpoint line second.** A task may only be skipped on
   resume if its evidence exists on disk. Writing the checkpoint first makes the

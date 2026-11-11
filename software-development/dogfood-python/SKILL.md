@@ -3,7 +3,7 @@ name: dogfood-python
 version: 1.0.0
 author: Hermes Agent
 license: MIT
-description: QA exploratory d'applications Python par exécution réelle.
+description: Use when doing exploratory QA of Python apps by real execution.
 category: software-development
 metadata:
   hermes:

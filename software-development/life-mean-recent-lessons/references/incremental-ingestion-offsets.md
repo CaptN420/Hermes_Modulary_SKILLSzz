@@ -1,26 +1,25 @@
-# Ingestion incrémentale de logs JSONL — offsets, plafonds, idempotence
+# Incremental ingestion of JSONL logs — offsets, caps, idempotence
 
-Mécanique à respecter pour tout ingesteur qui reprend un fichier de log là où il s'est arrêté
-(Pipeline Inspector de Life_mean_realm et tout équivalent).
+Mechanics to respect for any ingester that resumes a log file where it stopped
+(the Life_mean_realm Pipeline Inspector and any equivalent).
 
-## 1. Les offsets renvoyés doivent être ABSOLUS
+## 1. Returned offsets must be ABSOLUTE
 
-Piège classique :
+Classic trap:
 
 ```python
 fh.seek(start_offset)
-pos = 0                      # ← le bug
+pos = 0                      # ← the bug
 while (chunk := fh.readline()):
     pos += len(chunk)
-    yield ev, pos            # offset relatif au point de reprise
+    yield ev, pos            # offset relative to the resume point
 ```
 
-L'appelant stocke `pos` comme position absolue. À la reprise suivante, l'offset a *rétréci* :
-le lecteur repart au milieu d'une ligne, relit du contenu déjà consommé ou s'arrête au mauvais
-endroit — sans lever d'exception.
+The caller stores `pos` as an absolute position. On the next resume, the offset has *shrunk*:
+the reader restarts in the middle of a line, re-reads content already consumed, or stops at the wrong
+place — without raising an exception.
 
-Correctif : lire depuis le début, sauter les lignes entièrement consommées, renvoyer la position
-réelle.
+Fix: read from the start, skip fully consumed lines, return the real position.
 
 ```python
 pos = 0
@@ -28,49 +27,49 @@ line_no = 0
 while (chunk := fh.readline()):
     pos += len(chunk)
     line_no += 1
-    if pos <= start_offset:      # ligne déjà consommée
+    if pos <= start_offset:      # line already consumed
         continue
-    if not chunk.endswith(b"\n"):  # ligne partielle : ne pas la consommer
+    if not chunk.endswith(b"\n"):  # partial line: do not consume it
         break
     yield line_no, chunk.decode("utf-8", errors="replace").strip(), pos
 ```
 
-Coût linéaire assumé (≈1 s pour 85 Mo) ; la justesse des offsets et des numéros de ligne prime.
-Enregistrer `line_no` réel rend aussi `source_line` exploitable pour remonter au journal d'origine.
+Linear cost accepted (≈1 s for 85 MB); offset and line-number correctness comes first.
+Recording the real `line_no` also makes `source_line` usable to trace back to the original log.
 
-## 2. Un plafond par fichier exige un drapeau, sinon le reste est perdu
+## 2. A per-file cap requires a flag, otherwise the rest is lost
 
-Un `max_records_per_file` (ex. 200 000) coupe la lecture d'un gros fichier. Si l'état persiste
-`size == st_size` sans autre marque, la passe suivante considère le fichier comme entièrement
-consommé et **ne relit jamais la suite**. Aucune erreur n'est signalée.
+A `max_records_per_file` (e.g. 200,000) cuts off the reading of a large file. If the state persists
+`size == st_size` with no other mark, the next pass considers the file fully
+consumed and **never reads the remainder**. No error is reported.
 
-- Ajouter une colonne `truncated` (migration `ALTER TABLE ingest_state ADD COLUMN truncated INTEGER NOT NULL DEFAULT 0`).
-- La condition « fichier déjà ingéré » doit inclure `and not state['truncated']`.
-- Enregistrer l'`offset` du dernier enregistrement émis, pas la taille du fichier.
-- Message d'erreur explicite : `plafond N atteint (reprise à l'offset X)`.
+- Add a `truncated` column (migration `ALTER TABLE ingest_state ADD COLUMN truncated INTEGER NOT NULL DEFAULT 0`).
+- The "file already ingested" condition must include `and not state['truncated']`.
+- Record the `offset` of the last emitted record, not the file size.
+- Explicit error message: `cap N reached (resume at offset X)`.
 
-Réparer un état hérité : `UPDATE ingest_state SET truncated=1 WHERE events >= <plafond>`.
-Vérifier ensuite que `offset == size` et `truncated == 0` : c'est la preuve que le fichier est
-réellement consommé en entier. Un fichier plus gros que le plafond demande **deux passes** —
-le documenter au lieu de laisser croire à une ingestion complète en une exécution.
+Repair an inherited state: `UPDATE ingest_state SET truncated=1 WHERE events >= <cap>`.
+Then check that `offset == size` and `truncated == 0`: that is the proof that the file really
+is consumed in full. A file larger than the cap requires **two passes** —
+document it instead of letting it look like a complete ingestion in a single run.
 
-## 3. Idempotence et déduplication
+## 3. Idempotence and deduplication
 
-- `event_id` stable (hash de type + fichier + ligne + horodatage) et `INSERT OR IGNORE`.
-- Contrôle : `SELECT count(*) - count(distinct event_id) FROM events` doit valoir 0.
-- Contrôle de reprise : deux passes consécutives sans modification → `events_added == 0`.
-- Un compteur `bytes_read` déclaré mais jamais incrémenté se lit comme un bug de lecture :
-  l'alimenter avec la taille réellement examinée rend les passes comparables.
+- Stable `event_id` (hash of type + file + line + timestamp) and `INSERT OR IGNORE`.
+- Check: `SELECT count(*) - count(distinct event_id) FROM events` must equal 0.
+- Resume check: two consecutive passes with no change → `events_added == 0`.
+- A `bytes_read` counter declared but never incremented reads as a read bug:
+  feeding it with the size actually examined makes the passes comparable.
 
-## 4. Ce que l'ingesteur ne doit pas faire
+## 4. What the ingester must not do
 
-- Ne pas réécrire ni tronquer le journal d'origine : l'état d'ingestion est une *cache dérivée*,
-  reconstructible ; supprimer et reconstruire cette cache est acceptable, toucher aux logs non.
-- Ne pas déduire une corrélation causale d'un simple identifiant de regroupement. `run_id`,
-  `session_id`, `generation_id` prouvent l'appartenance à un même run → corrélation **probable**.
-  Seuls un `model_call_id` ou un `correlation_id` d'audit autorisent « explicite ».
+- Do not rewrite or truncate the original log: the ingestion state is a *derived cache*,
+  reconstructible; deleting and rebuilding that cache is acceptable, touching the logs is not.
+- Do not infer a causal correlation from a mere grouping identifier. `run_id`,
+  `session_id`, `generation_id` prove membership of the same run → **probable** correlation.
+  Only a `model_call_id` or an audit `correlation_id` authorise "explicit".
 
-## 5. Vérification rapide
+## 5. Quick verification
 
 ```python
 c.execute("select correlation,count(*) from events group by correlation")

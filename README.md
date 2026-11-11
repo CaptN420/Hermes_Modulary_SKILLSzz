@@ -1,12 +1,12 @@
-# Hermes Skills — 17 skills procéduraux (profil `def`)
+# Hermes Skills — 17 procedural skills (`def` profile)
 
-Bundle de skills procéduraux pour [Hermes Agent](https://hermes-agent.nousresearch.com) : 17 skills qui encodent des faits vérifiés — chemins exacts, commandes, valeurs numériques, pièges reproductibles — sur les projets **PyBR0S** (Pygame fighting/RPG), **Mountain_Roy** (RTS), **Life_mean** (lab de données synthétiques), **CaptN-BRAIN / Mia_Brain**, plus l'outillage transverse (FastAPI, jeux terminal, QA exploratory, venv Windows, cron Hermes).
+Bundle of procedural skills for [Hermes Agent](https://hermes-agent.nousresearch.com): 17 skills that encode verified facts — exact paths, commands, numeric values, reproducible pitfalls — on the **PyBR0S** (Pygame fighting/RPG), **Mountain_Roy** (RTS), **Life_mean** (synthetic data lab) and **CaptN-BRAIN / Mia_Brain** projects, plus cross-cutting tooling (FastAPI, terminal games, exploratory QA, Windows venv, Hermes cron).
 
-Règle du dépôt : un skill n'est pas de la documentation décorative. Chaque règle encode un bug déjà payé, avec sa cause et son correctif, pour qu'une session future ne le repaye pas.
+Repo rule: a skill is not decorative documentation. Every rule encodes a bug already paid for, with its cause and its fix, so a future session does not pay for it again.
 
 ## Installation
 
-Le chargeur Hermes déduit la **catégorie du dossier**, pas du frontmatter : respecter l'arborescence en copiant.
+The Hermes loader infers the **category from the folder**, not from the frontmatter: respect the tree when copying.
 
 ```bash
 git clone https://github.com/CaptN420/Hermes_Modulary_SKILLSzz.git
@@ -17,50 +17,50 @@ cp -r game-dev software-development autonomous-ai-agents "$DEST"/
 cp -r pygame-debugging python-venv-setup life-mean-dashboard-qa "$DEST"/
 ```
 
-Contrôle après copie : `skills_list()` doit rendre les 17 noms, chacun avec sa description.
+Check after copying: `skills_list()` must return the 17 names, each with its description.
 
-## Les 17 skills
+## The 17 skills
 
-| Catégorie | Skills |
+| Category | Skills |
 |---|---|
 | `game-dev` | `pybr0s`, `sprite-management` |
 | `software-development` | `pygame-asset-generation`, `mountain-roy`, `life-mean`, `life-mean-recent-lessons`, `snapshot-logic-architecture`, `captn-brain`, `team-coding-workflow`, `autonomous-decision-engine`, `dogfood-python`, `python-fastapi-apps`, `python-terminal-games` |
 | `autonomous-ai-agents` | `hermes-cron-jobs` |
-| racine (non classés) | `pygame-debugging`, `python-venv-setup`, `life-mean-dashboard-qa` |
+| root (uncategorized) | `pygame-debugging`, `python-venv-setup`, `life-mean-dashboard-qa` |
 
-`pygame-asset-generation` est fourni ici mais peut être inactif côté Hermes s'il a été archivé (dossier `.archive/`) — c'est un skill du bundle, pas une dépendance des autres.
+`pygame-asset-generation` is provided here but may be inactive on the Hermes side if it was archived (`.archive/` folder) — it is a bundle skill, not a dependency of the others.
 
-## Prompt de reconstruction
+## Reconstruction prompt
 
-La spec complète ci-dessous permet de régénérer le bundle de zéro dans une session fraîche.
-
----
-
-
-# PROMPT — Recréer le bundle complet des 17 skills maison (profil Hermes `def`)
-
-Copier-coller ce prompt tel quel dans une session Hermes fraîche (même machine, même utilisateur)
-pour régénérer le bundle de skills développé sur les projets PyBR0S, Mountain_Roy, Life_mean,
-CaptN-BRAIN et l'outillage QA/dev.
+The complete spec below allows regenerating the bundle from scratch in a fresh session.
 
 ---
 
-## RÔLE
 
-Tu es un agent Hermes qui doit reconstruire un bundle de skills procéduraux à partir de la
-spécification ci-dessous. Tu écris des skills, pas de la documentation décorative : chaque skill
-encode des faits durement gagnés (chemins exacts, commandes exactes, pièges reproductibles) pour
-qu'une session future ne réapprenne pas les mêmes bugs.
+# PROMPT — Recreate the complete bundle of 17 home-grown skills (Hermes `def` profile)
 
-## CIBLE ET CONVENTIONS
+Paste this prompt as-is into a fresh Hermes session (same machine, same user)
+to regenerate the skills bundle developed on the PyBR0S, Mountain_Roy, Life_mean,
+CaptN-BRAIN projects and the QA/dev tooling.
 
-- Racine des skills : `C:\Users\celes\AppData\Local\hermes\profiles\def\skills\`
-- Un skill = un dossier + `SKILL.md` (+ `references/`, `scripts/`, `templates/` si listés).
-- Frontmatter YAML obligatoire :
+---
+
+## ROLE
+
+You are a Hermes agent that must rebuild a bundle of procedural skills from the
+specification below. You write skills, not decorative documentation: every skill
+encodes hard-won facts (exact paths, exact commands, reproducible pitfalls) so
+that a future session does not relearn the same bugs.
+
+## TARGET AND CONVENTIONS
+
+- Skills root: `C:\Users\celes\AppData\Local\hermes\profiles\def\skills\`
+- One skill = one folder + `SKILL.md` (+ `references/`, `scripts/`, `templates/` if listed).
+- Mandatory YAML frontmatter:
   ```yaml
   ---
-  name: <slug-kebab-case>
-  description: <≤120 caractères, format "Use when ... . <comportement>.">
+  name: <kebab-case-slug>
+  description: <≤120 chars, format "Use when ... . <behavior>.">
   category: <software-development|game-dev|autonomous-ai-agents>
   version: 1.0.0
   author: Hermes Agent
@@ -71,53 +71,53 @@ qu'une session future ne réapprenne pas les mêmes bugs.
       related_skills: [ ... ]
   ---
   ```
-- Ne PAS recréer les ~60 skills bundled (hermes-agent, github, systematic-debugging, dogfood,
-  p5js, microsoft-office, etc.) : ils reviennent avec l'installation Hermes et sont listés dans
-  `.bundled_manifest`. Seuls les 17 skills ci-dessous sont maison.
-- Langue : français pour les skills de projet (utilisateur francophone), anglais acceptable pour
-  l'outillage générique. Ton concis, impératif, une règle par leçon.
-- Chaque skill projet commence par : chemin du projet + « utilisateur francophone ; réponses
-  concises ; valeur = code vérifié qui fonctionne ».
+- Do NOT recreate the ~60 bundled skills (hermes-agent, github, systematic-debugging, dogfood,
+  p5js, microsoft-office, etc.): they come back with the Hermes installation and are listed in
+  `.bundled_manifest`. Only the 17 skills below are home-grown.
+- Language: French for project skills (French-speaking user), English acceptable for
+  generic tooling. Concise, imperative tone, one rule per lesson.
+- Every project skill starts with: project path + "French-speaking user; concise
+  replies; value = verified code that works".
 
-- La `description` sert au **routing** : elle doit contenir la techno, le symptôme et le nom du
-  projet (« Debug Pygame apps: fog of war, state flow, DPI issues »). 120 caractères est un
-  plafond, pas un objectif : ne jamais la mutiler pour tenir 60.
+- The `description` is used for **routing**: it must contain the tech, the symptom and the
+  project name ("Debug Pygame apps: fog of war, state flow, DPI issues"). 120 characters is a
+  ceiling, not a goal: never mutilate it to fit 60.
 
-## MODE D'EXÉCUTION
+## EXECUTION MODE
 
-Exécute sans demander de confirmation : écris les fichiers, ne rapporte qu'à la fin.
-Procède en 5 passes, avec un `skills_list()` de contrôle après chacune (ne charge pas les 17
-d'un coup dans un seul raisonnement) :
+Execute without asking for confirmation: write the files, report only at the end.
+Proceed in 5 passes, with a control `skills_list()` after each (do not load the 17
+at once in a single reasoning):
 
-- **Passe 1 — jeu PyBR0S** : skills 1 → 4
-- **Passe 2 — RTS + environnements** : skills 5 → 6
-- **Passe 3a — Life_mean (la plus lourde)** : skills 7 → 9 — `life-mean` (+6 references),
+- **Pass 1 — PyBR0S game**: skills 1 → 4
+- **Pass 2 — RTS + environments**: skills 5 → 6
+- **Pass 3a — Life_mean (the heaviest)**: skills 7 → 9 — `life-mean` (+6 references),
   `life-mean-recent-lessons` (+6 references, 1 script), `life-mean-dashboard-qa`.
-  Un skill à la fois : `SKILL.md` d'abord, puis ses references ; ne pas garder les 17 specs en tête.
-- **Passe 3b — CaptN / Mia_Brain** : skills 10 → 13
-- **Passe 4 — outillage transverse** : skills 14 → 17
+  One skill at a time: `SKILL.md` first, then its references; do not keep the 17 specs in mind.
+- **Pass 3b — CaptN / Mia_Brain**: skills 10 → 13
+- **Pass 4 — cross-cutting tooling**: skills 14 → 17
 
-Si le contexte sature en cours de passe : termine le skill en cours, puis reprends à la frontière
-suivante. Ne laisse jamais un skill à moitié écrit — un skill partiel est pire qu'un skill absent,
-il sera chargé et trompera la session suivante.
+If context saturates mid-pass: finish the current skill, then resume at the next
+boundary. Never leave a skill half-written — a partial skill is worse than a missing skill,
+it will be loaded and mislead the next session.
 
-Si un fait d'une spec paraît faux ou incohérent avec le disque, ne bloque pas et ne demande rien :
-écris-le tel quel et liste l'écart dans le rapport final. Un skill écrit avec un écart signalé
-vaut mieux qu'un bundle à moitié créé.
+If a fact in a spec looks wrong or inconsistent with the disk, do not block and do not ask:
+write it as-is and list the discrepancy in the final report. A skill written with a flagged
+discrepancy is worth more than a half-created bundle.
 
-## RÈGLES D'ÉCRITURE (non négociables)
+## WRITING RULES (non-negotiable)
 
-1. Pas de narration de session, pas de date de réunion : seulement la règle + le POURQUOI.
-   Exception unique : un skill « lessons log » (dont la description l'annonce comme journal daté)
-   est daté par section — c'est sa valeur, et il est destiné à être archivé, pas à durer.
-2. Tout fait doit être vérifiable : chemin, commande, valeur numérique, nom de fonction.
-3. Signaler explicitement les pièges « ça a l'air cassé mais c'est un test obsolète » et
-   « ça passe en test unitaire mais échoue en jeu » (les deux classes de faux diagnostics).
-4. Séparer : faits projet (chemins/constantes) → skill projet ; oracle technique réutilisable
-   (pygame, FastAPI, venv) → skill outillage ; leçons datées d'une campagne → skill « lessons ».
-5. Un skill ne dépasse pas ~320 lignes ; au-delà, découper en `references/<sujet>.md`.
+1. No session narration, no meeting date: only the rule + the WHY.
+   Single exception: a "lessons log" skill (whose description announces it as a dated journal)
+   is dated per section — that is its value, and it is meant to be archived, not to last.
+2. Every fact must be verifiable: path, command, numeric value, function name.
+3. Explicitly flag the "looks broken but it's a stale test" and
+   "passes in unit test but fails in game" pitfalls (the two classes of false diagnosis).
+4. Separate: project facts (paths/constants) → project skill; reusable technical oracle
+   (pygame, FastAPI, venv) → tooling skill; dated campaign lessons → "lessons" skill.
+5. A skill must not exceed ~320 lines; beyond that, split into `references/<topic>.md`.
 
-## ORDRE DE CRÉATION (dépendances d'abord)
+## CREATION ORDER (dependencies first)
 
 1. `pybr0s` → 2. `sprite-management` → 3. `pygame-asset-generation` → 4. `pygame-debugging`
 → 5. `mountain-roy` → 6. `python-venv-setup` → 7. `life-mean`
@@ -128,266 +128,265 @@ vaut mieux qu'un bundle à moitié créé.
 
 ---
 
-## SPÉCIFICATIONS
+## SPECIFICATIONS
 
-### 1. `pybr0s` (catégorie game-dev)
-Description : `Use when working on PyBR0S (Python/Pygame 2D fighting/RPG).`
-Projet : `C:\Users\celes\Documents\Hermes-Workspace\PyBR0SVARCHITECTURE-master` (v1.3).
-Sections obligatoires : Architecture Notes (audit), Hard-won facts, Running tests,
+### 1. `pybr0s` (game-dev category)
+Description: `Use when working on PyBR0S (Python/Pygame 2D fighting/RPG).`
+Project: `C:\Users\celes\Documents\Hermes-Workspace\PyBR0SVARCHITECTURE-master` (v1.3).
+Mandatory sections: Architecture Notes (audit), Hard-won facts, Running tests,
 Verifying sprite/VFX rendering headless, File structure, Pitfalls, World Prototype Integration,
 Autonomous Mode, Related Skills.
-Faits durs à conserver :
-- Dette : `GameBaseMixin` = 864 lignes / 12+ managers (god class) ; Player/Enemy ~70 % dupliqués ;
-  valeurs d'équilibrage éparpillées (`config.py`, `settings.py`, `combat_balance.py`) ;
-  roguelite/perks/equipment non testés. Bons patterns à préserver : `ManagerRegistry`,
-  `EventSystem`, design data-driven.
-- Skins par classe : `core/sprite_animator.py`, `get_player_animator(class_name)` lazy + cache,
-  `.upper()` normalisé ; Knight→Samurai, Rogue→Martial Hero 2 (fallback), Mage→Martial Hero,
-  Heavy→StaticAnimator, inconnu→Rogue (jamais None). États idle/run/attack1/attack2/hurt/jump/
-  fall/death, fallback idle. Ennemis = Ice Golem via `StaticAnimator`. Rect 40x60 inchangé,
-  ancrage bottom-center, flip par `facing`, fallback rectangle.
-- Règle asset : ne modifier QUE le rendu/audio ; jamais hitbox, dégâts, save, balance.
-  Suite 367 tests verte AVANT et APRÈS.
-- Combat : `DamageSystem.apply_damage(target, dmg, direction)` attend une direction SCALAIRE
-  (un Vector2 casse `apply_knockback`) ; l'armure absorbe AVANT les HP → un coup < ~30 armure
-  laisse les HP intacts (faux négatif ; tester avec damage > armor) ;
-  `ComboSystem.on_hit(attacker, defender)` exige les deux arguments.
-- Journal de bugs B1–B11 à résumer en règles : import local conditionnel → UnboundLocalError ;
-  save `coins` vs lecture `gold` (or perdu au load) ; `ARMOR_REGEN_RATE` 4.0 → softlock, fix 1.0 ;
-  `apply_phase_2_damage(entity, damage, ko_threshold=250)` ; `SLOT_TO_CATEGORIES` centralisé
-  (ring→ring1/ring2, amulet→amulet1/amulet2) ; garde `current_attacker` dans `on_hit` = code mort
-  qui plafonnait le combo à 1.1, plafond aligné 2.5→3.0 ; tests de balance obsolètes → mettre à
-  jour les tests, pas le design (HP 500, armor 250, regen 1.0, delay 2.5) ; save lit
-  `p.equipment_manager` + dual-write `equipment`/`equipped_gear` ; rage jamais activée
-  (`rage_threshold` 80) et knockback hors contrat documenté.
-- Tests : monkeypatch `pygame.event.wait = lambda t=0: pygame.event.poll()` AVANT `import pygame`,
-  sinon `Game.__init__` (game_base.py:221) se fige en driver dummy. Utiliser un script loader,
-  pas `python -m unittest discover`. Python système 3.14 sans pygame → venv Hermes.
-- Vérif headless : `Game` → `set_state(PLAYING)` → `ensure_player()` → `draw()` ; position via
-  `g.cam.apply(p.rect)` (caméra non mise à jour hors boucle → offset 0, zoom 1) ; compter les
-  pixels ≠ fond `(20,20,20)` / plateforme `(100,200,100)` ; sauver et agrandir x4 avec clamp du
-  subsurface ; tester le fallback en renommant le dossier ; vérifier `p.rect` toujours 40x60.
-- Intégration world prototype : `GameState.WORLD`, `self.world_manager=None`, `_enter_world()`,
-  `_update_world(dt)`, `draw_world_screen()`, touche debug, ESC → TITLE. Mode autonome :
-  flag `self.autonomous`, `_autonomous_input()`, `_autonomous_advance()`,
-  remplacement de `self.ctrl.get()` dans game_loop, arg CLI `--autonomous`,
-  `SDL_VIDEODRIVER=dummy` pour le headless.
+Hard facts to keep:
+- Debt: `GameBaseMixin` = 864 lines / 12+ managers (god class); Player/Enemy ~70% duplicated;
+  balance values scattered (`config.py`, `settings.py`, `combat_balance.py`);
+  roguelite/perks/equipment untested. Good patterns to preserve: `ManagerRegistry`,
+  `EventSystem`, data-driven design.
+- Per-class skins: `core/sprite_animator.py`, `get_player_animator(class_name)` lazy + cached,
+  `.upper()`-normalized; Knight→Samurai, Rogue→Martial Hero 2 (fallback), Mage→Martial Hero,
+  Heavy→StaticAnimator, unknown→Rogue (never None). States idle/run/attack1/attack2/hurt/jump/
+  fall/death, idle fallback. Enemies = Ice Golem via `StaticAnimator`. 40x60 rect unchanged,
+  bottom-center anchoring, flip by `facing`, rectangle fallback.
+- Asset rule: modify ONLY rendering/audio; never hitbox, damage, save, balance.
+  367-test suite green BEFORE and AFTER.
+- Combat: `DamageSystem.apply_damage(target, dmg, direction)` expects a SCALAR direction
+  (a Vector2 breaks `apply_knockback`); armor absorbs BEFORE HP → a hit under ~30 armor
+  leaves HP intact (false negative; test with damage > armor);
+  `ComboSystem.on_hit(attacker, defender)` requires both arguments.
+- Bug journal B1–B11 to summarize as rules: conditional local import → UnboundLocalError;
+  save `coins` vs read `gold` (gold lost on load); `ARMOR_REGEN_RATE` 4.0 → softlock, fix 1.0;
+  `apply_phase_2_damage(entity, damage, ko_threshold=250)`; centralized `SLOT_TO_CATEGORIES`
+  (ring→ring1/ring2, amulet→amulet1/amulet2); `current_attacker` guard in `on_hit` = dead code
+  that capped the combo at 1.1, ceiling aligned 2.5→3.0; stale balance tests → update the tests,
+  not the design (HP 500, armor 250, regen 1.0, delay 2.5); save reads
+  `p.equipment_manager` + dual-write `equipment`/`equipped_gear`; rage never activated
+  (`rage_threshold` 80) and knockback off the documented contract.
+- Tests: monkeypatch `pygame.event.wait = lambda t=0: pygame.event.poll()` BEFORE `import pygame`,
+  otherwise `Game.__init__` (game_base.py:221) freezes under dummy driver. Use a loader script,
+  not `python -m unittest discover`. System python 3.14 without pygame → Hermes venv.
+- Headless verification: `Game` → `set_state(PLAYING)` → `ensure_player()` → `draw()`; position via
+  `g.cam.apply(p.rect)` (camera not updated outside the loop → offset 0, zoom 1); count pixels
+  ≠ background `(20,20,20)` / platform `(100,200,100)`; save and upscale x4 with clamping of the
+  subsurface; test the fallback by renaming the folder; check `p.rect` is still 40x60.
+- World prototype integration: `GameState.WORLD`, `self.world_manager=None`, `_enter_world()`,
+  `_update_world(dt)`, `draw_world_screen()`, debug key, ESC → TITLE. Autonomous mode:
+  `self.autonomous` flag, `_autonomous_input()`, `_autonomous_advance()`,
+  replacement of `self.ctrl.get()` in game_loop, CLI arg `--autonomous`,
+  `SDL_VIDEODRIVER=dummy` for headless.
 
 ### 2. `sprite-management` (game-dev)
-Description : `Load and render sprite sheets for PyBR0S characters`
-Contenu : `core/sprite_manager.py` ; feuilles 96x128 = 3x4 frames de 32x32 ; boss 288x384 = 9x12 ;
-crop premier frame `(0,0,32,32)` via PIL → surface alpha ; taille cible
-`max(60, w*1.5) x max(80, h*1.5)` ; centrage, flip par facing, hitbox 40x60 inchangée ;
-issues : artefacts multi-sprites (crop raté), sprites trop petits (facteur d'échelle),
-mauvais alignement (calcul de centre).
+Description: `Load and render sprite sheets for PyBR0S characters`
+Content: `core/sprite_manager.py`; sheets 96x128 = 3x4 frames of 32x32; boss 288x384 = 9x12;
+crop first frame `(0,0,32,32)` via PIL → alpha surface; target size
+`max(60, w*1.5) x max(80, h*1.5)`; centering, flip by facing, 40x60 hitbox unchanged;
+issues: multi-sprite artifacts (failed crop), sprites too small (scale factor),
+bad alignment (center computation).
 
 ### 3. `pygame-asset-generation` (software-development)
-Description : `Generate pixel art sprites for Pygame games; source free/CC0 external assets.`
-Sections : Procedure (structure `assets/sprites`, génération PIL, SpriteManager, venv Windows,
-intégration renderer), Pitfalls, Mountain_Roy RTS Specifics, PyBR0S Game Flow, References.
-Faits durs : venv Windows via python du hermes-runtime (`cpython-3.11.16`) car le python par
-défaut crée un venv Linux ; `from PIL import Image` ; fallback rectangle obligatoire ;
-`CLASS_SKINS` capitalisé vs `rpg.class_name` minuscule → `.capitalize()` ; `reset_game()` doit
-préserver la NOUVELLE classe ; pièges Mountain_Roy (lambda dynamique avec self, `on_building_built()`
-et non `on_build()`, `display.flip()` manquant, caméra float → `int()`, DPI, réutilisation de
-`display.get_surface()`) ; flux de menus Start→Class→Map→Play / Load→Map→Play.
-Fichiers liés : `references/sprite-palette.md`, `references/free-asset-sourcing.md`,
+Description: `Generate pixel art sprites for Pygame games; source free/CC0 external assets.`
+Sections: Procedure (`assets/sprites` structure, PIL generation, SpriteManager, Windows venv,
+renderer integration), Pitfalls, Mountain_Roy RTS Specifics, PyBR0S Game Flow, References.
+Hard facts: Windows venv via the hermes-runtime python (`cpython-3.11.16`) because the default
+python creates a Linux venv; `from PIL import Image`; mandatory rectangle fallback;
+capitalized `CLASS_SKINS` vs lowercase `rpg.class_name` → `.capitalize()`; `reset_game()` must
+preserve the NEW class; Mountain_Roy pitfalls (dynamic lambda with self, `on_building_built()`
+and not `on_build()`, missing `display.flip()`, float camera → `int()`, DPI, reuse of
+`display.get_surface()`); menu flow Start→Class→Map→Play / Load→Map→Play.
+Linked files: `references/sprite-palette.md`, `references/free-asset-sourcing.md`,
 `references/pygame-sprite-animation.md`, `scripts/itch_download.py`,
 `templates/sprite_generator.py`.
 
-### 4. `pygame-debugging` (racine)
-Description : `Debug Pygame apps: fog of war, state flow, DPI issues.`
-**Budget : `SKILL.md` ≤ 320 lignes** (état de référence après découpage : 162). Répartition :
-- `SKILL.md` : Quick Reference (symptôme → cause probable) + 7 règles actionnables
-  (une règle = une cause + un correctif) + 5 pièges génériques Pygame. Pas de récit.
-- `references/mountain-roy-pitfalls.md` : l'oracle de bugs extrait de l'ancien SKILL.md
-  (symptôme → cause → correctif → leçon : récolte, mouvement, mêlée, XP, HUD, signatures).
-- `references/mountain-roy-workflow.md` : le cycle de vie des systèmes RTS.
-- `references/pygame-dpi-and-window.md` : **optionnel** — seulement si le détail DPI/fenêtre
-  dépasse les 5 puces du SKILL.md (sinon il reste inline, pas de fichier pour 20 lignes).
-Rôle : oracle transverse Pygame + atelier Mountain_Roy. Quick Reference (écran noir, unités
-invisibles, input, fenêtre hors écran, ressources, workers, mouvement erratique, melee qui ne
-touche jamais), plus :
-- Un seul chemin de mouvement par unité ; un `return` avant le dépôt = worker qui porte à vie.
-- `_find_and_assign_to_resource()` : diversifier par type non porté (rayon 1.5x), sinon le plus
-  proche ; `max_carry_types` par faction ; dépôt au bâtiment allié le plus proche.
-- Séparation de collision (25 + rayons 12 = ~49 px) > range mêlée 32 → coup impossible :
-  range 64, test `distance <= unit.range + target.radius`. Diagnostiquer avec `game.update()`
-  complet, pas un harnais mouvement seul.
-- XP via `killed_by` propagé dans `take_damage(damage, attacker=None)` ; level-up doit restater.
-- `hasattr(target,'hp')` avant accès (cibles `BuildingProgress`/`ResourceNode`).
-- Surcharge de `draw()` : signature identique au parent, sinon TypeError au dispatch polymorphe.
-- Refactor partiel : `git diff --stat` + suite complète AVANT de toucher ; `create_unit` affecte
-  `.game` après construction ; restaurer `Unit.to_dict` plutôt qu'inliner ; tests mono-frame
-  invalides par une nouvelle temporisation → boucler les frames, ne pas revenir au design.
-Fichier lié : `references/mountain-roy-workflow.md`.
+### 4. `pygame-debugging` (root)
+Description: `Debug Pygame apps: fog of war, state flow, DPI issues.`
+**Budget: `SKILL.md` ≤ 320 lines** (reference state after splitting: 162). Breakdown:
+- `SKILL.md`: Quick Reference (symptom → probable cause) + 7 actionable rules
+  (one rule = one cause + one fix) + 5 generic Pygame pitfalls. No narrative.
+- `references/mountain-roy-pitfalls.md`: the bug oracle extracted from the old SKILL.md
+  (symptom → cause → fix → lesson: harvesting, movement, melee, XP, HUD, signatures).
+- `references/mountain-roy-workflow.md`: the RTS systems lifecycle.
+- `references/pygame-dpi-and-window.md`: **optional** — only if the DPI/window detail
+  exceeds the 5 bullets of SKILL.md (otherwise it stays inline, no file for 20 lines).
+Role: cross-cutting Pygame oracle + Mountain_Roy workshop. Quick Reference (black screen, invisible
+units, input, off-screen window, resources, workers, erratic movement, melee that never
+hits), plus:
+- One movement path per unit; a `return` before deposit = worker that carries forever.
+- `_find_and_assign_to_resource()`: diversify by type not carried (1.5x radius), otherwise the
+  nearest; `max_carry_types` per faction; deposit at the nearest allied building.
+- Collision separation (25 + radii 12 = ~49 px) > melee range 32 → hit impossible: set
+  range 64, test `distance <= unit.range + target.radius`. Diagnose with a full `game.update()`
+  call, not a movement-only harness.
+- XP via `killed_by` propagated in `take_damage(damage, attacker=None)`; level-up must re-stat.
+- `hasattr(target,'hp')` before access (`BuildingProgress`/`ResourceNode` targets).
+- `draw()` override: signature identical to the parent, otherwise TypeError on polymorphic dispatch.
+- Partial refactor: `git diff --stat` + full suite BEFORE touching anything; `create_unit` sets
+  `.game` after construction; restore `Unit.to_dict` rather than inlining it; single-frame tests
+  invalidated by a new timer → loop over frames, do not revert the design.
+Linked file: `references/mountain-roy-workflow.md`.
 
 ### 5. `mountain-roy` (software-development)
-Description : `Use when working on Mountain_Roy (Python/Pygame RTS).`
-Projet : `C:\Users\celes\Documents\Hermes-Workspace\Mountain_Roy`, tests
+Description: `Use when working on Mountain_Roy (Python/Pygame RTS).`
+Project: `C:\Users\celes\Documents\Hermes-Workspace\Mountain_Roy`, tests
 `./.venv/Scripts/python.exe -m pytest tests/ -q`.
-Faits durs (tous à conserver) : `pygame.init()` + `set_mode((100,100))` avant imports ; ne pas
-appeler `g.update(dt)` dans les tests ; récolte temporisée (`harvest_progress >= 1.0`, ~1 s) ;
-`create_unit` affecte `.game` après construction ; `Unit.to_dict()` doit rester sur la base ;
-`_enemy_workers()` vs `_enemy_combat()` ; victoire = town hall ennemi détruit (pas wipe total) ;
-objectif survive = `objective.current = int(mission_timer)` en direct ; population
-`10 + 5*farm_count` ; `_can_produce_unit` vérifie `faction.can_produce` avant la population ;
-`Mission.enemy_config` + `time_limit` sérialisés ; `[G]` cycle `TIME_SCALES=(1,2,4,8,16)` ;
-JAMAIS réaffecter `self.units`/`self.buildings` (`[...]` slice assign, sinon systèmes désynchronisés) ;
-`Hero.unit_type='hero'` ; héros non gratuit (hero_hall, 250g/100w, résurrection) ;
-`take_damage()` applique l'armure UNE fois (passer les dégâts bruts) ; purge des morts dans
-`units` ET `selected_units` ; 3 héros/faction (`entities/hero_types.py`) ; synergie
-(`Unit.get_synergy_bonus`) ; équilibrage ranged (archer 16 dmg/1.0, mage 40/1.6) déjà corrigé ;
-modificateur orc 1.15 dmg/1.10 hp.
-Ajouter un tableau des touches (W worker, J builder, B build, 1-6 unités, T recherche, H héros).
+Hard facts (all to keep): `pygame.init()` + `set_mode((100,100))` before imports; do not
+call `g.update(dt)` in tests; timed harvesting (`harvest_progress >= 1.0`, ~1 s);
+`create_unit` sets `.game` after construction; `Unit.to_dict()` must stay on the base;
+`_enemy_workers()` vs `_enemy_combat()`; victory = enemy town hall destroyed (not total wipe);
+survive objective = `objective.current = int(mission_timer)` live; population
+`10 + 5*farm_count`; `_can_produce_unit` checks `faction.can_produce` before population;
+`Mission.enemy_config` + `time_limit` serialized; `[G]` cycles `TIME_SCALES=(1,2,4,8,16)`;
+NEVER reassign `self.units`/`self.buildings` (`[...]` slice assign, otherwise systems desync);
+`Hero.unit_type='hero'`; hero not free (hero_hall, 250g/100w, resurrection);
+`take_damage()` applies armor ONCE (pass raw damage); purge dead units in
+`units` AND `selected_units`; 3 heroes/faction (`entities/hero_types.py`); synergy
+(`Unit.get_synergy_bonus`); ranged balance (archer 16 dmg/1.0, mage 40/1.6) already fixed;
+orc modifier 1.15 dmg/1.10 hp.
+Add a key table (W worker, J builder, B build, 1-6 units, T research, H hero).
 
-### 6. `python-venv-setup` (racine)
-Description : `Create and manage Python virtual environments on Windows.`
-Procédure venv, activation PowerShell vs bash, pip, vérification, désactivation ; pièges :
-terminal = bash (pas PowerShell), `.bat` avec `cd /d` + `-m package.main`, venv Windows vs Linux,
-pygame impossible à compiler → wheel précompilée / `pygame-ce` pour Python 3.14,
+### 6. `python-venv-setup` (root)
+Description: `Create and manage Python virtual environments on Windows.`
+venv procedure, PowerShell vs bash activation, pip, verification, deactivation; pitfalls:
+terminal = bash (not PowerShell), `.bat` with `cd /d` + `-m package.main`, Windows vs Linux venv,
+pygame impossible to compile → precompiled wheel / `pygame-ce` for Python 3.14,
 `SDL_VIDEO_WINDOW_POS/CENTERED/HIGHDPI_DISABLED`, `display.get_surface() or set_mode()`,
-`display.flip()` obligatoire, lambda `type()` avec self cassé, `mixer.init()` en try/except.
+`display.flip()` mandatory, `type()` lambda with self broken, `mixer.init()` in try/except.
 
-### 7. `life-mean` (software-development, ~314 lignes + 6 references)
-Description : `Use when working on the Life_mean synthetic data lab.`
-Projet : `C:/Users/celes/Documents/Hermes-Workspace/Life_mean_realm` (ADSG P0–P12, 501 tests).
-Sections : When to Use, Verification rules (always on), Architecture truth, Subject tree
-(`compare/subjects.py`), Dashboard Docker data sync (host `data/` → volume nommé), Compare UI
+### 7. `life-mean` (software-development, ~314 lines + 6 references)
+Description: `Use when working on the Life_mean synthetic data lab.`
+Project: `C:/Users/celes/Documents/Hermes-Workspace/Life_mean_realm` (ADSG P0–P12, 501 tests).
+Sections: When to Use, Verification rules (always on), Architecture truth, Subject tree
+(`compare/subjects.py`), Dashboard Docker data sync (host `data/` → named volume), Compare UI
 click-flow, Compare V1 (`compare/`), Life_mean Studio PySide6, Life_mean Lab Phase D, Test suite,
-Zero-secrets/packaging, Wheel integrity, fichiers vidés, réparations P0/P1 (2026-10-09),
-audit terminologique « protocol », provenance RAW du Code Lab, preuves RAW (pass-rates),
-timeline lab-wide, cycle de vie AutoPilot/DebateEngine (8d2392a), Debate Lab, Code Lab,
-méthodologie d'audit Context-State (lecture seule), cartographie état canonique vs compresseur
-(deux mécanismes parallèles NON câblés), pitfall GCM push headless Windows (bypass wincred),
-pitfall defaultdict qui mute l'état (verdict dépendant de l'ordre), E2E code-lab doit forcer
-`multi_agent=False`, Cluster Graph CG1 (`compare/graph.py`), revue sécurité hermes-orchestrator,
-pitfalls, credentials/providers/onglets, process, `experimental/`.
-References : `dashboard-api-extension.md`, `docker-and-provider-verification.md`,
+Zero-secrets/packaging, Wheel integrity, emptied files, P0/P1 repairs (2026-10-09),
+"protocol" terminology audit, Code Lab RAW provenance, RAW evidence (pass-rates),
+lab-wide timeline, AutoPilot/DebateEngine lifecycle (8d2392a), Debate Lab, Code Lab,
+Context-State audit methodology (read-only), canonical state vs compressor mapping
+(two parallel mechanisms NOT wired), GCM push headless Windows pitfall (wincred bypass),
+defaultdict that mutates state (order-dependent verdict), code-lab E2E must force
+`multi_agent=False`, Cluster Graph CG1 (`compare/graph.py`), hermes-orchestrator security review,
+pitfalls, credentials/providers/tabs, process, `experimental/`.
+References: `dashboard-api-extension.md`, `docker-and-provider-verification.md`,
 `experiment-resume-and-checkpoints.md`, `history-rewrite-secret-purge.md`,
 `recovering-emptied-source.md`, `verification-and-audit-discipline.md`.
 
-### 8. `life-mean-recent-lessons` (software-development, ~244 lignes + 6 references + 1 script)
-Description : `Journal daté Oct 2026 des leçons Life_mean — temporaire, archivable.`
-Nature : **lessons log**, seule exception assumée à la règle « pas de date ». Le frontmatter doit
-l'annoncer (« journal daté … temporaire, archivable ») pour qu'un agent sache que le contenu est
-périssable : quand une leçon devient une règle durable, la promouvoir dans `life-mean` et la
-retirer d'ici.
-Leçons une par section, datées, sans narration : Agent Builder (2026-10-31), Historical Thinkers
-& Patterns, config du modèle Sentinel, correctif de provenance provider, accès GitHub (Tailscale
-bloque le privé), CaptN Runtime v1, Pipeline Inspector & Feature Pool, permissions Docker
-(Errno 13), Studio qui « ne fait rien » au lancement, couverture ≠ inventaire, pont déjà existant,
-« erreur de permission » = classer le littéral d'abord, orchestrateur vs permissions (deux systèmes
-non reliés aux clients), registres d'auto-extension P5 (« total: 0 »), observabilité persistée P6,
-« bloqué par une dépendance » (vérifier que le code existe), outils maths (parser, ne pas balayer
-les chiffres), onglets/télémétrie hôte, brancher ≠ supporter, journal d'usage runtime, git sur ce
-dépôt, « 2 features sur 989 » (fenêtre récente ≠ échantillon), 403 avant lecture du corps =
-connexion avortée sous Windows, `inspect.getsource` ment après réécriture, porte de vérification
-avant le patch suivant, durabilité/reproductibilité/honnêteté des artefacts, `pyproject.toml`
-insuffisant, baseline de tests + commandes.
-References : `dashboard-tabs.md`, `docker-run-volumes.md`, `durability-reproducibility.md`,
+### 8. `life-mean-recent-lessons` (software-development, ~244 lines + 6 references + 1 script)
+Description: `Dated Oct 2026 journal of Life_mean lessons — temporary, archivable.`
+Nature: **lessons log**, the only accepted exception to the "no dates" rule. The frontmatter must
+announce it ("dated journal … temporary, archivable") so an agent knows the content is
+perishable: when a lesson becomes a durable rule, promote it into `life-mean` and remove it
+from here.
+Lessons one per section, dated, without narrative: Agent Builder (2026-10-31), Historical Thinkers
+& Patterns, Sentinel model config, provider provenance fix, GitHub access (Tailscale
+blocks private), CaptN Runtime v1, Pipeline Inspector & Feature Pool, Docker permissions
+(Errno 13), Studio that "does nothing" at launch, coverage ≠ inventory, bridge already
+existing, "permission error" = classify the literal first, orchestrator vs permissions (two
+systems not connected to the clients), P5 self-extension registries ("total: 0"), P6 persisted
+observability, "blocked by a dependency" (verify the code exists), math tools (parse, do not sweep
+the numbers), host tabs/telemetry, wiring ≠ supporting, runtime usage log, git on this
+repo, "2 features out of 989" (recent window ≠ sample), 403 before reading the body =
+aborted connection on Windows, `inspect.getsource` lies after a rewrite, verification gate
+before the next patch, artifact durability/reproducibility/honesty, `pyproject.toml`
+insufficient, test baseline + commands.
+References: `dashboard-tabs.md`, `docker-run-volumes.md`, `durability-reproducibility.md`,
 `feature-pool-discovery.md`, `incremental-ingestion-offsets.md`, `orchestrator-permissions.md` ;
 script `scripts/audit-js-blocks.py`.
 
-### 9. `life-mean-dashboard-qa` (racine)
-Description : `Use when QA-testing the Life_mean dashboard.`
-Cible `http://127.0.0.1:8080/dashboard` ; lanceur canonique `run_server.bat` (tue les listeners
-zombies, forward `--host/--port`, `run_server.bat 9099`) ; équivalent
-`python -m experiments.dashboard --port 8080` ; durcissement SQL (requêtes paramétrées,
-validation des entrées) ; évolution MIA v0 → Life_mean ; gotcha métriques ; procédure QA ;
-fichiers.
+### 9. `life-mean-dashboard-qa` (root)
+Description: `Use when QA-testing the Life_mean dashboard.`
+Target `http://127.0.0.1:8080/dashboard`; canonical launcher `run_server.bat` (kills zombie
+listeners, forwards `--host/--port`, `run_server.bat 9099`); equivalent
+`python -m experiments.dashboard --port 8080`; SQL hardening (parameterized queries,
+input validation); MIA v0 → Life_mean evolution; metrics gotcha; QA procedure; files.
 
 ### 10. `snapshot-logic-architecture` (software-development)
-Description : `Use for LearningBus, Snapshot, and Security Gate logic.`
-Trois états indépendants (Security Gate = RBAC statique, LearningBus = preuve brute,
-Snapshot = pont) ; `BatchProcessor` = compilateur (analyse acquis → diff → Version_Manager
-v1.1.a→v1.1.b → `active_snap.json` → rollback vers `snapshots/`) ; schéma unifié
+Description: `Use for LearningBus, Snapshot, and Security Gate logic.`
+Three independent states (Security Gate = static RBAC, LearningBus = raw evidence,
+Snapshot = bridge); `BatchProcessor` = compiler (acquired analysis → diff → Version_Manager
+v1.1.a→v1.1.b → `active_snap.json` → rollback to `snapshots/`); unified schema
 (version, timestamp, context.identity/competencies/constraints, active_roadmap_step,
-build_notes) ; autorisation = `Role_Has_Right AND Has_Validated_Competency` ; reconstruction
-d'un état passé en réappliquant Gate + Bus.
+build_notes); authorization = `Role_Has_Right AND Has_Validated_Competency`; reconstruction
+of a past state by re-applying Gate + Bus.
 
 ### 11. `captn-brain` (software-development)
-Description : `CaptN-BRAIN CLI, optimisation tokens/contexte temps réel.`
-Projet `C:\Users\celes\Documents\Hermes-Workspace\Mia_Brain\CaptN-BRAIN-main`.
-Sections : CLI Protocol (la CLI est LA seule source de vérité), principe central
-(déterministe d'abord, LLM si nécessaire), wrapper + venv unique point d'entrée, flags globaux
-d'optimisation du contexte À METTRE AVANT la commande, commandes temps réel sous `devtools`,
-économiseurs de tokens, fichiers clés, pitfalls.
+Description: `CaptN-BRAIN CLI, real-time token/context optimization.`
+Project `C:\Users\celes\Documents\Hermes-Workspace\Mia_Brain\CaptN-BRAIN-main`.
+Sections: CLI Protocol (the CLI is THE single source of truth), core principle
+(deterministic first, LLM when needed), wrapper + single venv entry point, global context
+optimization flags TO BE PLACED BEFORE the command, real-time commands under `devtools`,
+token savers, key files, pitfalls.
 
 ### 12. `team-coding-workflow` (software-development)
-Description : `Use when building a multi-role AI coding team pipeline.`
-Sections : Architecture (rôles junior/mid/senior/validator), Role Philosophies, Intelligent Turn
-Reprise, Validator Gates, Usage, Integration with Code Lab Engine, Pitfalls, Files.
+Description: `Use when building a multi-role AI coding team pipeline.`
+Sections: Architecture (junior/mid/senior/validator roles), Role Philosophies, Intelligent Turn
+Resume, Validator Gates, Usage, Integration with Code Lab Engine, Pitfalls, Files.
 
 ### 13. `autonomous-decision-engine` (software-development)
-Description : `Build telemetry-driven decision systems with pattern analysis.`
-Sections : Overview, Architecture, Procedure en 6 étapes (decision space, collecte télémétrie,
-analyse de patterns, règles de décision, garde-fous de sécurité, journalisation), Decision Rules
+Description: `Build telemetry-driven decision systems with pattern analysis.`
+Sections: Overview, Architecture, 6-step Procedure (decision space, telemetry collection,
+pattern analysis, decision rules, safety guardrails, logging), Decision Rules
 Reference, CLI Integration (`captn/cli/_devtools.py`), Verification, Pitfalls, Files Structure.
-Principe : les modèles proposent, le système de permissions autorise.
+Principle: models propose, the permission system authorizes.
 
 ### 14. `dogfood-python` (software-development)
-Description : `QA exploratory d'applications Python par exécution réelle.`
-Workflow discover entrypoints → scénarios réalistes → varier entrées/config → observer →
-inspecter l'état persisté → reproduire → minimiser → rapporter la preuve. Pour chaque issue :
-scénario, attendu, réel, commande exacte, traceback, reproductibilité, sévérité, composant
-suspect. Règles : exécution réelle > lecture de code ; aucune affirmation sans reproduction ;
-ne pas corriger pendant la découverte ; distinguer FAIL/ERROR/INCONCLUSIVE/PASS.
+Description: `Exploratory QA of Python apps through real execution.`
+Workflow discover entrypoints → realistic scenarios → vary inputs/config → observe →
+inspect persisted state → reproduce → minimize → report the evidence. For each issue:
+scenario, expected, actual, exact command, traceback, reproducibility, severity, suspected
+component. Rules: real execution > reading code; no claim without reproduction;
+do not fix during discovery; distinguish FAIL/ERROR/INCONCLUSIVE/PASS.
 
 ### 15. `python-fastapi-apps` (software-development)
-Description : `Use when building or extending a Python FastAPI web app.`
-Procédure en 7 points : baseline (suite existante verte + compte), ne pas réécrire le cœur,
-SPA servie par la même app (`Mount("/assets")`, `html[data-theme]`), `python-multipart` pour
-`UploadFile`, jobs longs en threads daemon avec work-file disque + réindexation paresseuse
-(survit au restart), tests à 3 niveaux (unit / `httpx.AsyncClient(ASGITransport)` / E2E uvicorn+browser),
-vérifier chaque critère par exécution réelle y compris les chemins d'échec.
-Pitfalls : `JSONResponse` écrase `status_code` du décorateur ; `__init__.py` qui shadow un
-sous-module (`from . import export as export_mod`) ; `Lock` non réentrant → `RLock` ;
-mutateur « no-op silencieux » ; encodage (utf-8 → cp1252 → latin-1 avant détection) ;
-TestClient multiples deadlock Windows ; singletons qui fuient entre fichiers de test ;
-`write_file` refusé après lecture partielle → `.new` + `mv -f` ; upload CDP
-`DOM.setFileInputFiles` + event `change`, polling jamais sleep fixe ; `pip-audit` sort 3
-QUAND il trouve des vulnérabilités ; normaliser le vocabulaire de sévérité ; `Mount` sans
-`.endpoint` ni `.methods`.
-References : `test-harness.md`, `audit-and-validation.md`.
+Description: `Use when building or extending a Python FastAPI web app.`
+7-point procedure: baseline (existing suite green + count), do not rewrite the core,
+SPA served by the same app (`Mount("/assets")`, `html[data-theme]`), `python-multipart` for
+`UploadFile`, long jobs in daemon threads with an on-disk work-file + lazy reindexing
+(survives restart), tests at 3 levels (unit / `httpx.AsyncClient(ASGITransport)` / E2E uvicorn+browser),
+verify every criterion by real execution including failure paths.
+Pitfalls: `JSONResponse` overrides the decorator's `status_code`; `__init__.py` shadowing a
+submodule (`from . import export as export_mod`); non-reentrant `Lock` → `RLock`;
+silent no-op mutator; encoding (utf-8 → cp1252 → latin-1 before detection);
+multiple TestClients deadlock on Windows; singletons leaking between test files;
+`write_file` refused after a partial read → `.new` + `mv -f`; CDP upload
+`DOM.setFileInputFiles` + `change` event, poll and never use a fixed sleep; `pip-audit` exits 3
+WHEN it finds vulnerabilities; normalize the severity vocabulary; `Mount` without
+`.endpoint` or `.methods`.
+References: `test-harness.md`, `audit-and-validation.md`.
 
 ### 16. `python-terminal-games` (software-development)
-Description : `Use when building ASCII/terminal games in Python.`
-Sections : When to Use, Procedure, Windows console specifics, Pitfalls, Conventions for this user.
-References : `headless-testing.md`, `windows-console.md` ; template `launcher.bat`.
+Description: `Use when building ASCII/terminal games in Python.`
+Sections: When to Use, Procedure, Windows console specifics, Pitfalls, Conventions for this user.
+References: `headless-testing.md`, `windows-console.md`; template `launcher.bat`.
 
 ### 17. `hermes-cron-jobs` (autonomous-ai-agents)
-Description : `Schedule/edit Hermes cron jobs with Discord delivery.`
-Commandes de création/édition de cron jobs Hermes, livraison Discord, pièges de planification ;
-template `templates/ai-morning-briefing-prompt.md` (briefing matinal autonome).
+Description: `Schedule/edit Hermes cron jobs with Discord delivery.`
+Hermes cron job creation/editing commands, Discord delivery, scheduling pitfalls;
+template `templates/ai-morning-briefing-prompt.md` (autonomous morning briefing).
 
 ---
 
-## VÉRIFICATION FINALE
+## FINAL VERIFICATION
 
-Exécuter et corriger jusqu'au vert :
+Run and fix until green:
 
 ```bash
 cd C:/Users/celes/AppData/Local/hermes/profiles/def/skills
-# 1) les 17 dossiers existent
+# 1) the 17 folders exist
 for s in pybr0s mountain-roy sprite-management pygame-asset-generation pygame-debugging \
   python-venv-setup snapshot-logic-architecture life-mean-dashboard-qa; do test -f "$s/SKILL.md" || echo "MISSING $s"; done
-# 2) frontmatter valide + description présente
+# 2) valid frontmatter + description present
 for f in */SKILL.md software-development/*/SKILL.md autonomous-ai-agents/hermes-cron-jobs/SKILL.md; do
   head -1 "$f" | grep -q '^---$' || echo "BAD FRONTMATTER $f"
   grep -q '^description:' "$f" || echo "NO DESCRIPTION $f"
 done
-# 3) aucun skill vide ou stub
+# 3) no empty or stub skill
 find . -name SKILL.md -not -path './.archive/*' -size -1k
 ```
 
-Puis `skills_list()` doit montrer **les 17 noms attendus** — verdict par nom, jamais par total
-(le nombre de skills bundled varie avec la version d'Hermes installée), chacun avec description et
-catégorie. Contrôle de substance : ouvrir
-`pybr0s`, `mountain-roy`, `life-mean`, `pygame-debugging` et vérifier qu'on y trouve bien les
-faits numériques (864 lignes, 367 tests, 10+5*farms, harvest 1.0, armor 4.0→1.0, 40x60).
+Then `skills_list()` must show **the 17 expected names** — verdict per name, never by total
+(the number of bundled skills varies with the installed Hermes version), each with description and
+category. Substance check: open
+`pybr0s`, `mountain-roy`, `life-mean`, `pygame-debugging` and verify the numeric
+facts are actually there (864 lines, 367 tests, 10+5*farms, harvest 1.0, armor 4.0→1.0, 40x60).
 
-## SORTIE ATTENDUE
+## EXPECTED OUTPUT
 
-Un court rapport : skills créés (nom, catégorie, nombre de lignes), fichiers de support
-recréés, résultat des 3 vérifications, et tout écart assumé par rapport à cette spécification.
+A short report: skills created (name, category, line count), support files
+recreated, result of the 3 verifications, and any discrepancy accepted versus this specification.

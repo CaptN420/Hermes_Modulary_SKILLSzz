@@ -23,7 +23,7 @@ The system operates on a "Bridge" architecture where three independent states ar
 
 ## 2. The Batch Process (Distillation)
 The `BatchProcessor` acts as the compiler. It transforms raw logs into a stable state:
-1. **Analysis:** Scans `LearningBus` for "Acquis" (validated concepts).
+1. **Analysis:** Scans `LearningBus` for "acquis" (validated concepts).
 2. **Diffing:** Compares new acquis against the previous `Snapshot`.
 3. **Version_Manager:** Increments the version (v1.1.a -> v1.1.b) and generates a new `active_snap.json`.
 4. **Rollback:** Can revert the `active_snap.json` to any previous version in the `snapshots/` directory.
@@ -40,7 +40,7 @@ The Snapshot is a single JSON object containing:
 - `build_notes`: The "thought process" (feedback) of the Batch.
 
 ## 4. The "Bridge" Logic (Decision Engine)
-The Routeur de Décision uses the Snapshot to authorize actions:
+The Decision Router (`Routeur de Décision`) uses the Snapshot to authorize actions:
 `Permission = (User_Role_Has_Right) AND (User_Has_Validated_Competency)`
 
 ## 5. Time Travel & Reconstruction

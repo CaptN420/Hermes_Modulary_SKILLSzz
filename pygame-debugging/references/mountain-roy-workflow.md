@@ -71,7 +71,7 @@ Priority 3: Gold mines (with available slots, max 3 workers)
 
 ## New Building Types (2026-09-16)
 
-### Collection Building (Cabane de récolte)
+### Collection Building (harvest hut)
 Constructible building near village for workers to deposit resources.
 
 **Cost:** 100 gold, 80 wood, 6 seconds construction time
@@ -561,14 +561,14 @@ g.construction_system._all_nodes = []
 ## Audit Priority Order (user-specified)
 
 When fixing a batch of verified bugs, the user wants this exact order (do not reorganize):
-1. **Recherche technologique** (tech tree)
-2. **Workers & économie**
-3. **Sauvegarde / chargement**
+1. **Technology research** (tech tree)
+2. **Workers & economy**
+3. **Save / load**
 4. **Construction & placement**
-5. **Déplacement, pathfinding & combat**
-6. **Campagne & UX**
+5. **Movement, pathfinding & combat**
+6. **Campaign & UX**
 
-Each fix must be done TDD (test first, watch it fail, implement, watch it pass) and must NOT break the earlier tests. At the end give a résumé: files modified, bugs fixed, tests run, remaining limits.
+Each fix must be done TDD (test first, watch it fail, implement, watch it pass) and must NOT break the earlier tests. At the end give a summary: files modified, bugs fixed, tests run, remaining limits.
 
 ## Tech-Tree State Bugs (class-level state is shared)
 

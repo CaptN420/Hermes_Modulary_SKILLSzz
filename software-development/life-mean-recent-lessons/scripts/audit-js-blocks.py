@@ -1,15 +1,15 @@
-"""Vérifie la syntaxe JS de CHAQUE bloc <script> d'un fichier HTML.
+"""Check the JS syntax of EACH <script> block of an HTML file.
 
 Usage:
     python audit-js-blocks.py experiments/ui/dashboard.html
 
-Pourquoi bloc par bloc : un seul SyntaxError rend son <script> entier inopérant
-(fonctions jamais définies, onglets/boutons inertes) alors que le reste de la page
-fonctionne. Le navigateur ne signale rien dans le terminal : ce script est le seul
-moyen rapide de le voir. Un `const` redéclaré dans la même portée ne peut pas passer
-`node --check`, donc un OK prouve aussi l'absence de doublon.
+Why block by block: a single SyntaxError makes its whole <script> inoperative
+(functions never defined, tabs/buttons inert) while the rest of the page
+works. The browser reports nothing in the terminal: this script is the only
+fast way to see it. A `const` redeclared in the same scope cannot pass
+`node --check`, so an OK also proves the absence of a duplicate.
 
-Nécessite `node` dans le PATH. Code de sortie 1 si un bloc est invalide.
+Requires `node` in the PATH. Exit code 1 if a block is invalid.
 """
 
 from __future__ import annotations
@@ -25,11 +25,11 @@ from pathlib import Path
 def check(path: str) -> int:
     src = Path(path).read_text(encoding="utf-8", errors="replace")
     blocks = re.findall(r"<script[^>]*>(.*?)</script>", src, re.S)
-    print(f"{len(blocks)} bloc(s) <script> trouvé(s)")
+    print(f"{len(blocks)} <script> block(s) found")
 
     rc = 0
     for index, js in enumerate(blocks, 1):
-        # Position du bloc dans le fichier, utile pour aller corriger au bon endroit.
+        # Position of the block in the file, useful for fixing it in the right place.
         start = src.find(js)
         line = src[:start].count("\n") + 1 if start >= 0 else 0
 
@@ -45,11 +45,11 @@ def check(path: str) -> int:
 
         if proc.returncode != 0:
             rc = 1
-            print(f"  [KO] bloc {index} (à partir de la ligne ~{line}):")
+            print(f"  [KO] block {index} (starting at line ~{line}):")
             for text_line in proc.stderr.strip().splitlines()[:4]:
                 print("       " + text_line)
         else:
-            print(f"  [OK] bloc {index} ({len(js)} caractères)")
+            print(f"  [OK] block {index} ({len(js)} characters)")
     return rc
 
 

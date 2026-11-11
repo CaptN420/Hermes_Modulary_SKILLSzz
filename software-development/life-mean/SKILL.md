@@ -128,7 +128,7 @@ data/raw_debates top-level experiment runs: ALL recorded failures are the single
 
 ## Lab-wide live timeline (roadmap M0 §22) — how it's wired
 - `CodeLabController` keeps `self._timeline` (list, capped `TIMELINE_LIMIT=500`): the run `handler()` closure (inside `start_run`) appends EVERY emitted event to both the per-run `view.events` AND the lab-wide `_timeline`. `get_timeline(limit)` returns `{events, count}`, stripping large payload fields (`source/tests/plan/result/response/code`) so it stays a diagnostic surface, never a data dump. Endpoint `GET /api/code-lab/timeline` → `_code_lab_timeline()`. Dashboard panel `#lab-timeline` polls it every 3s alongside `loadCodeLab()` (both inside the panel-active interval).
-- PITFALL du serveur: `from experiments.dashboard import LifeMeanDashboard` FAILS (ImportError) — there is no such class; entry point is the function `start_dashboard(host, port)` (used by the `__main__` argparse block and `run_dashboard_thread`). To smoke-test the dashboard live, call `start_dashboard('127.0.0.1', <port>)` in a background thread/process, never instantiate a class named LifeMeanDashboard.
+- Server PITFALL: `from experiments.dashboard import LifeMeanDashboard` FAILS (ImportError) — there is no such class; entry point is the function `start_dashboard(host, port)` (used by the `__main__` argparse block and `run_dashboard_thread`). To smoke-test the dashboard live, call `start_dashboard('127.0.0.1', <port>)` in a background thread/process, never instantiate a class named LifeMeanDashboard.
 - After editing dashboard.html, ALWAYS re-validate by extracting the inline JS with `re.findall(r'<script[^>]*>(.*?)</script>', s, re.S)` → `node --check`; keep a single balanced script block. Verify the served HTML too (curl /dashboard | grep) — the earlier fix passes only after the sanitize script re-balanced the nesting.
 
 ## AutoPilot/DebateEngine lifecycle (P0/P1 repair 8d2392a) — the architecture truth
@@ -163,7 +163,7 @@ When auditing Life_mean's architecture for context handling, compression, or sta
 **STRICT DEFINITIONS (do not conflate):**
 1. `DETERMINISTIC_EXECUTION` = task/tool/validator executes by rules (`execution_mode="deterministic"`). Does NOT imply structured context or compression.
 2. `CANONICAL_CONTEXT_STATE` = compact structured representation fed to LLMs (fields: goal, validated_facts, observations, hypotheses, open_questions, constraints, failures, source_refs, state_version). Often DOES NOT EXIST.
-3. `LLM_CONTEXT_COMPRESSION` = LLM summarizes large context into smaller form (e.g., Hermes aux model). Only in `legacy/` — NOT active Life_mean.
+3. `LLM_CONTEXT_COMPRESSION` = LLM summarizes large context into smaller form (e.g., Hermes auxiliary model). Only in `legacy/` — NOT active Life_mean.
 4. `FULL_HISTORY_BEHAVIOR` = what the LLM receives. Trace actual message construction, not just grep for `FULL_HISTORY` symbol.
 5. `HYBRID_VALIDATION` = validator combines deterministic + LLM evaluation (`validation_method="hybrid"`). NOT same as hybrid execution mode.
 

@@ -1,6 +1,6 @@
-# Mountain_Roy / Pygame — oracle de bugs (symptôme → cause → correctif → leçon)
+# Mountain_Roy / Pygame — bug oracle (symptom → cause → fix → lesson)
 
-Extrait de l'ancien SKILL.md (799 lignes) lors du découpage. Chaque entrée est un piège réel.
+Extracted from the former SKILL.md (799 lines) during the split. Every entry is a real pitfall.
 
 ## Resource Systems
 
@@ -491,7 +491,7 @@ def draw(self, screen: pygame.Surface, camera_x: float = 0, camera_y: float = 0)
 ```python
 # In systems/movement.py
 def update(self, unit: Unit, dt: float):
-    # Vérifier si l'unité peut attaquer
+    # Check whether the unit can attack
     if unit.target and hasattr(unit.target, 'hp') and unit.target.hp > 0:
         # ... attack logic
 ```
@@ -565,7 +565,7 @@ def draw_resources(self, economy, units=None, buildings=None):
 
 **Lesson:** Production is building-centered — 1-6 produce from `_selected_building`, not a global roster. B is a menu, not a cycle-through switch. T does nothing useful without a research building selected (see the workflow reference for messages/UX).
 
-### Collection Building (Cabane de récolte)
+### Collection Building (harvest hut)
 Constructible building near village for workers to deposit resources.
 
 **Cost:** 100 gold, 80 wood, 6 seconds construction time

@@ -123,23 +123,23 @@ self.screen = pygame.display.get_surface() or pygame.display.set_mode((WIDTH, HE
 4. **Test input flow:** Verify event handling for state transitions
 5. **Isolate rendering:** Draw simple shapes to verify display works
 
-## Règles actionnables (extraites du détail, vérifiées en jeu)
+## Actionable Rules (extracted from the detail, verified in-game)
 
-- **Un seul chemin de mouvement par unité.** Deux blocs qui pilotent `move_target` se neutralisent ;
-  un `return` placé avant le dépôt fait porter les ressources à vie.
-- **Mêlée : `range` doit dépasser la séparation de collision** (25 + 2×12 ≈ 49 px → range 64).
-  Sinon `distance <= range` est inatteignable et aucun coup ne part, alors que les tests unitaires
-  isolés passent (le harnais n'applique pas la collision).
-- **Récolte temporisée** : `harvest_progress >= 1.0`. Un `update(0.016)` unique ne produit rien ;
-  les tests doivent boucler les frames jusqu'à la transition et asserter l'état final.
-- **`hasattr(target, 'hp')` avant tout accès** : les cibles peuvent être `BuildingProgress` ou
-  `ResourceNode`, pas seulement des unités.
-- **XP seulement si `killed_by` est propagé** dans `take_damage(damage, attacker=...)` ; un
-  level-up qui ne restate pas (damage/max_hp/armor) est cosmétique.
-- **Surcharge polymorphe** : `draw()`/`update()` d'une sous-classe doivent garder la signature du
-  parent, sinon `TypeError` au dispatch de la boucle de jeu.
-- **Refactor partiel** : `git diff --stat` + suite complète AVANT de toucher ; `create_unit` affecte
-  `.game` après construction ; restaurer une méthode de base supprimée plutôt que l'inliner.
+- **One movement path per unit.** Two blocks driving `move_target` cancel each other out;
+  a `return` placed before the deposit makes resources carried for life.
+- **Melee: `range` must exceed collision separation** (25 + 2×12 ≈ 49 px → range 64).
+  Otherwise `distance <= range` is unreachable and no hit ever lands, while isolated unit tests
+  pass (the harness does not apply collision).
+- **Timed harvest**: `harvest_progress >= 1.0`. A single `update(0.016)` yields nothing;
+  tests must loop frames until the transition and assert the final state.
+- **`hasattr(target, 'hp')` before any access**: targets may be `BuildingProgress` or
+  `ResourceNode`, not only units.
+- **XP only if `killed_by` is propagated** in `take_damage(damage, attacker=...)`; a
+  level-up that does not restat (damage/max_hp/armor) is cosmetic.
+- **Polymorphic override**: a subclass `draw()`/`update()` must keep the parent signature,
+  otherwise `TypeError` in the game-loop dispatch.
+- **Partial refactor**: `git diff --stat` + full suite BEFORE touching anything; `create_unit` sets
+  `.game` after construction; restore a removed base method rather than inlining it.
 
 ## Quick Reference
 
@@ -157,8 +157,8 @@ self.screen = pygame.display.get_surface() or pygame.display.set_mode((WIDTH, HE
 
 ## Related References
 
-- `references/mountain-roy-workflow.md` — cycle de vie des systèmes RTS (workers, bâtiments, boucle).
-- `references/mountain-roy-pitfalls.md` — oracle de bugs : symptôme → cause → correctif → leçon
-  (récolte, mouvement, mêlée, XP, HUD, signatures, refactor partiel).
-Le détail DPI/fenêtre reste volontairement inline ci-dessus (moins de 30 lignes) ; si un futur
-besoin le fait grossir, l'extraire dans un fichier de référence plutôt que gonfler ce SKILL.md.
+- `references/mountain-roy-workflow.md` — RTS system lifecycle (workers, buildings, loop).
+- `references/mountain-roy-pitfalls.md` — bug oracle: symptom → cause → fix → lesson
+  (harvest, movement, melee, XP, HUD, signatures, partial refactor).
+DPI/window detail deliberately stays inline above (under 30 lines); if a future
+need makes it grow, extract it into a reference file rather than bloating this SKILL.md.
